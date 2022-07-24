@@ -112,34 +112,6 @@ terrain_sets = {
     ]
 }
 
-structure_sets = [
-    [STRUCTURE_TYPE.SHACK, STRUCTURE_COLOR.WHITE, [-2, 3]],
-    [STRUCTURE_TYPE.SHACK, STRUCTURE_COLOR.BLUE, [-3, 5]],
-    [STRUCTURE_TYPE.STONE, STRUCTURE_COLOR.GREEN, [3, 0]],
-    [STRUCTURE_TYPE.STONE, STRUCTURE_COLOR.WHITE, [5, 2]],
-    [STRUCTURE_TYPE.STONE, STRUCTURE_COLOR.BLUE, [1, 4]],
-    [STRUCTURE_TYPE.SHACK, STRUCTURE_COLOR.GREEN, [4, 5]],
-]
-
-# animal_sets = [
-#     [ANIMAL.COUGAR, [-1, 4]],
-#     [ANIMAL.COUGAR, [-1, 5]],
-#     [ANIMAL.COUGAR, [-2, 5]],
-#     [ANIMAL.COUGAR, [-6, 11]],
-#     [ANIMAL.COUGAR, [-5, 10]],
-#     [ANIMAL.COUGAR, [-5, 9]],
-#     [ANIMAL.COUGAR, [1, 11]],
-#     [ANIMAL.COUGAR, [0, 11]],
-#     [ANIMAL.COUGAR, [0, 1]],
-#     [ANIMAL.BEAR, [4, 0]],
-#     [ANIMAL.BEAR, [5, 0]],
-#     [ANIMAL.BEAR, [4, 1]],
-#     [ANIMAL.BEAR, [7, 0]],
-#     [ANIMAL.BEAR, [8, 0]],
-#     [ANIMAL.BEAR, [-2, 9]],
-#     [ANIMAL.BEAR, [-2, 10]],
-# ]
-
 animal_sets = {
                 1: [
                     [ANIMAL.BEAR, [-2, 3]],
