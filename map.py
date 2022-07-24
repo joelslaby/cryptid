@@ -19,23 +19,6 @@ class Map:
         self.width, self.height = self.size
         self.center = self.size / 2
 
-        # coord = mut.gen_hex_rectangle(2, 3)
-
-        # coord = mut.translate_map(coord, mut.W, 1)
-        # coord = mut.translate_map(coord, mut.NW, 3)
-
-        # hex_radius = 30
-        # hexes = []
-        
-        # for (x, key) in zip(coord, mut.TERRCOLORS.keys()):
-        #     print(x, key)
-        #     hexes.append(
-        #         ExampleHex(
-        #             x,
-        #             key,
-        #             hex_radius
-
-
         for cell_i in range(6):
             coord = mut.get_map_cell_coord(cell_i)
 
