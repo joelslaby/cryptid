@@ -59,6 +59,7 @@ W = np.array((-1, 1, 0))
 SW = np.array((-1, 0, 1))
 SE = np.array((0, -1, 1))
 E = np.array((1, -1, 0))
+ALL_DIRECTIONS = np.array([NW, NE, E, SE, SW, W])
 
 terrain_sets = [
     [
@@ -130,6 +131,7 @@ animal_sets = [
     [ANIMAL.COUGAR, [-5, 9]],
     [ANIMAL.COUGAR, [1, 11]],
     [ANIMAL.COUGAR, [0, 11]],
+    [ANIMAL.COUGAR, [0, 1]],
     [ANIMAL.BEAR, [4, 0]],
     [ANIMAL.BEAR, [5, 0]],
     [ANIMAL.BEAR, [4, 1]],
@@ -193,13 +195,13 @@ def make_poly_surface(color, shape = 6, angle_start = 45, sf = 1, radius = 30, o
     return surface
 
 
-def translate_map(map, direction, distance):
+def translate_coord(coord, direction, distance):
     direction = hx.cube_to_axial(np.array([direction]))
 
-    for i in range(len(map)):
-        map[i] = map[i] + distance * np.squeeze(direction)
+    for i in range(len(coord)):
+        coord[i] = coord[i] + distance * np.squeeze(direction)
 
-    return map
+    return coord
 
 
 def gen_hex_rectangle(size, center):
@@ -234,4 +236,3 @@ def get_map_cell_coord(cell_i):
     return coord
 
 
-    
