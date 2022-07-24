@@ -17,7 +17,6 @@ STRUCTCOLORS = {
     'blue': np.array([53, 111, 163]),
     'white': np.array([255, 255, 255]),
     'green': np.array([0, 255, 0]),
-    'black': np.array([0, 0, 0]),
 }
 
 ANIMALCOLORS = {
