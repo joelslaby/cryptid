@@ -3,8 +3,18 @@ import clue
 
 test_map = map.Map()
 
+mapArray = []
+for m in range(len(test_map.hex_map)):
+    mapArray = test_map.hex_map[m]
+
+print(mapArray)
+
 while test_map.main_loop():
     test_map.draw()
+
+
+
+
 
 
 """
@@ -50,6 +60,9 @@ def howManyMatches(self)
     <for loop end>
 """
 
+
+
+
 ClueArray = []
 
 Clue_Alpha = clue.Clue()
@@ -88,6 +101,5 @@ for i in range(-6, 7):
             else:
                 print("N")
             #<tile>.doesMatch = False
-
 
 test_map.quit_app()
