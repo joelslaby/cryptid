@@ -3,7 +3,8 @@ import hexy as hx
 import pygame as pg
 import map_util as mut
 import os
-from enum import Enum, auto
+from enum import Enum, auto, IntEnum
+from typing import List
 
 class ter(Enum):
     M = auto()
@@ -16,7 +17,7 @@ class Map:
     def __init__(self):
         self.hex_map = hx.HexMap()
         
-        self.size = np.array([700, 700])
+        self.size = np.array([1200, 1200])
         self.width, self.height = self.size
         self.center = self.size / 2
 
@@ -52,6 +53,7 @@ class Map:
 
             self.hex_map[np.array(coord)] = hexes
 
+
         # Init pygame variables
         self.main_surf = None
         self.font = None
@@ -60,7 +62,7 @@ class Map:
 
 
     def init_pg(self):
-        os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (100, 100)
+        os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (200, 200)
 
         pg.init()
         self.main_surf = pg.display.set_mode(self.size, 0, 0)
@@ -102,7 +104,9 @@ class Map:
                 self.main_surf.blit(hexagons[index].object, hex_positions[index][2] + self.center)
 
         for hexagon in list(self.hex_map.values()):
-            text = self.font.render(str(hexagon.axial_coordinates[0]), False, (0, 0, 0))
+            check_hex(self.hex_map, hexagon)
+
+            text = self.font.render(str(hexagon.clue_valid), False, (0, 0, 0))
             text.set_alpha(160)
             text_pos = hexagon.get_position() + self.center
             text_pos -= (text.get_width() / 2, text.get_height() / 2)
@@ -111,7 +115,7 @@ class Map:
         # Update screen at 30 frames per second
         pg.display.update()
         self.main_surf.fill('white')
-        self.clock.tick(30)      
+        self.clock.tick(30)
 
 
     def quit_app(self):
@@ -134,6 +138,10 @@ class hexagon(hx.HexTile):
                                            radius = self.radius,
                                            angle_start = 30
                                            )
+        self.clue_valid = 1
+
+        # flag if cryptid
+        
         
     def add_structure(self, struct, color):
         self.structure_type = struct
@@ -190,3 +198,75 @@ class hexagon(hx.HexTile):
         :return: The location of the center of the hex.
         """
         return self.position[0]
+
+
+def check_terrain(hex: hexagon, terrains: List[Enum]):
+    clue_valid = (hex.terrain in terrains)
+    return clue_valid
+
+def check_animal(hex: hexagon):
+    clue_valid = (hex.animal in mut.ANIMAL) and (hex.animal is not mut.ANIMAL.NONE)
+    return clue_valid
+
+def check_structure_type(hex: hexagon):
+    clue_valid = (hex.structure_type in mut.STRUCTURE_TYPE) and (hex.animal is not mut.STRUCTURE_TYPE.NONE)
+    return clue_valid
+
+def check_within(map, hex: hexagon, check: Enum, radius=0):
+    center = hex.axial_coordinates
+    check_coord = []
+    clue_valid = False
+
+    for q in np.linspace(-radius, radius, int(2*radius+1), dtype=int):
+        for r in np.linspace(-radius, radius, int(2*radius+1), dtype=int):
+            if abs(q + r) <= radius:
+                check_coord.append((center + [q, r]))
+
+    for coord in check_coord:
+        if map[coord]:
+            check_hex = map[coord][0]
+            if check in mut.TERRAIN:
+                clue_valid = clue_valid or (check_hex.terrain in [check])
+            elif check in mut.ANIMAL:
+                clue_valid = clue_valid or ((check_hex.animal in [check]) and (check_hex.animal is not mut.ANIMAL.NONE))
+            elif check in mut.STRUCTURE_TYPE:
+                clue_valid = clue_valid or ((check_hex.structure_type in [check]) and (check_hex.structure_type is not mut.STRUCTURE_TYPE.NONE))
+            elif check in mut.STRUCTURE_COLOR:
+                clue_valid = clue_valid or ((check_hex.structure_color in [check]) and (check_hex.structure_color is not mut.STRUCTURE_COLOR.NONE))
+
+    return clue_valid
+
+def check_hex(map, hex):
+    hex.clue_valid = ((check_within(map, hex, mut.ANIMAL.BEAR, radius = 2)) and
+                    (check_within(map, hex, mut.TERRAIN.FOREST) or check_within(map, hex, mut.TERRAIN.DESERT)) and
+                    (check_within(map, hex, mut.STRUCTURE_COLOR.GREEN, radius = 3))
+    )
+
+    return hex.clue_valid
+
+# def translate_map(map, direction, distance):
+#     direction = hx.cube_to_axial(np.array([direction]))
+#     print(type(map))
+#     temp_map = map
+#     for hex_coord in temp_map:
+#         hex_coord = np.fromstring(hex_coord, dtype=int, sep=',')
+#         hex = map[hex_coord][0]
+#         print(hex)
+
+#         print(hex.axial_coordinates)
+#         old_coord = hex.axial_coordinates
+
+#         hex.axial_coordinates += distance * np.squeeze(direction)
+
+#         print(hex.axial_coordinates)
+
+# # self.hex_map[np.array(coord)] = hexes
+#         del map[old_coord]
+#         print(map[hex.axial_coordinates])
+#         map[hex.axial_coordinates] = [hex]
+
+#         # print(hex_coord, distance, np.squeeze(direction))
+#         # print(hex_coord + distance * np.squeeze(direction))
+#         # map[hex_coord + distance * np.squeeze(direction)] = map[hex_coord]
+
+#     return map
