@@ -1,8 +1,12 @@
 # cryptid
 Uses several resources in the development:
+
 https://github.com/Manezki/CryptidSolver
+
 https://github.com/RedFT/Hexy
+
 https://github.com/RedFT/HexyExamples
+
 https://www.redblobgames.com/grids/hexagons/
 
 ## Board Development
