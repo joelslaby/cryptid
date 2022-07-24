@@ -261,12 +261,31 @@ def check_hex(map, hex, clue_vect):
 
         else:  
             hex.clue_valid &= check_within(map, hex, search, radius = rad)
-    # hex.clue_valid = ((check_within(map, hex, mut.ANIMAL.BEAR, radius = 2)) and
-    #                 (check_within(map, hex, mut.TERRAIN.FOREST) or check_within(map, hex, mut.TERRAIN.DESERT)) and
-    #                 (check_within(map, hex, mut.STRUCTURE_COLOR.GREEN, radius = 3))
-    # )
 
     return hex.clue_valid
+
+def sweep_clues(map, hex, clue_vect):
+    
+    clue_match = np.zeros(len(clue_vect))
+    
+    for (idx, clue) in enumerate(clue_vect):
+        this_clue_valid = False
+        
+        rad, search = clue.check()
+        
+        if (type(search) == list):
+            for s in search:
+                this_clue_valid = (this_clue_valid or 
+                check_within(map, hex, s, radius = rad)
+                )
+        else:  
+            this_clue_valid = check_within(map, hex, search, radius = rad)
+            
+        clue_match[idx] = this_clue_valid
+
+    return clue_match
+    
+    
 
 # def translate_map(map, direction, distance):
 #     direction = hx.cube_to_axial(np.array([direction]))
@@ -322,11 +341,11 @@ class Clue():
                 clue_inputs.append(i)
         
         parsed_terrains = clue_inputs[1].split('-')
+        parsed_animals  = clue_inputs[2].split('-')
         
         self.radius        = int(clue_inputs[0])
         self.terrain       = [mut.TERRAIN[x] for x in parsed_terrains]
-        self.animal        = mut.ANIMAL[clue_inputs[2]]
-        
+        self.animal        = [mut.ANIMAL[x]  for x in parsed_animals]
         
         if self.radius == 2:
             self.structure = mut.STRUCTURE_TYPE[clue_inputs[3]]
