@@ -268,33 +268,6 @@ def check_hex(map, hex, clue_vect):
 
     return hex.clue_valid
 
-# def translate_map(map, direction, distance):
-#     direction = hx.cube_to_axial(np.array([direction]))
-#     print(type(map))
-#     temp_map = map
-#     for hex_coord in temp_map:
-#         hex_coord = np.fromstring(hex_coord, dtype=int, sep=',')
-#         hex = map[hex_coord][0]
-#         print(hex)
-
-#         print(hex.axial_coordinates)
-#         old_coord = hex.axial_coordinates
-
-#         hex.axial_coordinates += distance * np.squeeze(direction)
-
-#         print(hex.axial_coordinates)
-
-# # self.hex_map[np.array(coord)] = hexes
-#         del map[old_coord]
-#         print(map[hex.axial_coordinates])
-#         map[hex.axial_coordinates] = [hex]
-
-#         # print(hex_coord, distance, np.squeeze(direction))
-#         # print(hex_coord + distance * np.squeeze(direction))
-#         # map[hex_coord + distance * np.squeeze(direction)] = map[hex_coord]
-
-#     return map
-
 class Clue():
     def __init__(self, clue):
         
@@ -322,11 +295,11 @@ class Clue():
                 clue_inputs.append(i)
         
         parsed_terrains = clue_inputs[1].split('-')
+        parsed_animals = clue_inputs[2].split('-')
         
         self.radius        = int(clue_inputs[0])
         self.terrain       = [mut.TERRAIN[x] for x in parsed_terrains]
-        self.animal        = mut.ANIMAL[clue_inputs[2]]
-        
+        self.animal        = [mut.ANIMAL[x] for x in parsed_animals]
         
         if self.radius == 2:
             self.structure = mut.STRUCTURE_TYPE[clue_inputs[3]]
