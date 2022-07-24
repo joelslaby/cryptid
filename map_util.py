@@ -1,7 +1,6 @@
 import numpy as np
 import hexy as hx
 import pygame as pg
-from sympy import N
 
 COLORS = {
     'red': np.array([244, 98, 105]),
