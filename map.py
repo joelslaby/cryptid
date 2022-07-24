@@ -11,19 +11,20 @@ class Map:
         self.width, self.height = self.size
         self.center = self.size / 2
 
-        coord = mut.gen_hex_rectangle(3, 3)
+        coord = mut.gen_hex_rectangle(2, 3)
 
         coord = mut.translate_map(coord, mut.W, 1)
         coord = mut.translate_map(coord, mut.NW, 3)
 
-        hex_radius = 50
-
+        hex_radius = 20
         hexes = []
-        for x in coord:
+        
+        for (x, key) in zip(coord, mut.TERRCOLORS.keys()):
+            print(x, key)
             hexes.append(
                 ExampleHex(
                     x,
-                    mut.COLORS['red'],
+                    key,
                     hex_radius
                 )
             )
@@ -79,7 +80,7 @@ class Map:
 
         # Update screen at 30 frames per second
         pg.display.update()
-        self.main_surf.fill(mut.COLORS['white'])
+        self.main_surf.fill('white')
         self.clock.tick(30)      
 
 
@@ -99,6 +100,36 @@ class ExampleHex(hx.HexTile):
 
     def set_value(self, value):
         self.value = value
+
+    def get_draw_position(self):
+        """
+        Get the location to draw this hex so that the center of the hex is at `self.position`.
+        :return: The location to draw this hex so that the center of the hex is at `self.position`.
+        """
+        draw_position = self.position[0] - [self.image.get_width() / 2, self.image.get_height() / 2]
+        return draw_position
+
+    def get_position(self):
+        """
+        Retrieves the location of the center of the hex.
+        :return: The location of the center of the hex.
+        """
+        return self.position[0]
+    
+class hexagon(hx.HexTile):
+    def __init__(self, axial_coordinates):
+        self.axial_coordinates = np.array([axial_coordinates])
+        self.cube_coordinates = hx.axial_to_cube(self.axial_coordinates)
+        self.position = hx.axial_to_pixel(self.axial_coordinates, radius)
+        self.terrain = None
+        self.radius = 20
+        self.animal = None
+        self.structure_type = None
+        self.structure_color = None
+        self.image = mut.make_hex_surface(self.terrain, self.animal, self.structure_type, self.structure_color, radius = self.radius)
+
+    def set_terrain(self, terr_num):
+        self.terrain = TERRAIN(terr_num)
 
     def get_draw_position(self):
         """
