@@ -59,6 +59,57 @@ SW = np.array((-1, 0, 1))
 SE = np.array((0, -1, 1))
 E = np.array((1, -1, 0))
 
+terrain_sets = [
+    [
+        TERRAIN.WATER, TERRAIN.WATER, TERRAIN.WATER,
+        TERRAIN.FOREST, TERRAIN.WATER, TERRAIN.WATER,
+        TERRAIN.FOREST, TERRAIN.MOUNTAIN, TERRAIN.MOUNTAIN,
+        TERRAIN.FOREST, TERRAIN.FOREST, TERRAIN.MOUNTAIN,
+        TERRAIN.SWAMP, TERRAIN.SWAMP, TERRAIN.MOUNTAIN,
+        TERRAIN.SWAMP, TERRAIN.SWAMP, TERRAIN.MOUNTAIN
+    ],
+    [
+        TERRAIN.MOUNTAIN, TERRAIN.MOUNTAIN, TERRAIN.WATER,
+        TERRAIN.MOUNTAIN, TERRAIN.MOUNTAIN, TERRAIN.WATER,
+        TERRAIN.MOUNTAIN, TERRAIN.WATER, TERRAIN.WATER,
+        TERRAIN.SWAMP, TERRAIN.DESERT, TERRAIN.WATER,
+        TERRAIN.SWAMP, TERRAIN.DESERT, TERRAIN.DESERT,
+        TERRAIN.SWAMP, TERRAIN.SWAMP, TERRAIN.DESERT
+    ],
+    [
+        TERRAIN.MOUNTAIN, TERRAIN.MOUNTAIN, TERRAIN.DESERT,
+        TERRAIN.WATER, TERRAIN.MOUNTAIN, TERRAIN.DESERT,
+        TERRAIN.WATER, TERRAIN.SWAMP, TERRAIN.SWAMP,
+        TERRAIN.WATER, TERRAIN.SWAMP, TERRAIN.SWAMP,
+        TERRAIN.WATER, TERRAIN.FOREST, TERRAIN.SWAMP,
+        TERRAIN.FOREST, TERRAIN.FOREST, TERRAIN.FOREST
+    ],
+    [
+        TERRAIN.FOREST, TERRAIN.DESERT, TERRAIN.DESERT,
+        TERRAIN.FOREST, TERRAIN.DESERT, TERRAIN.MOUNTAIN, 
+        TERRAIN.FOREST, TERRAIN.DESERT, TERRAIN.MOUNTAIN,
+        TERRAIN.FOREST, TERRAIN.FOREST, TERRAIN.MOUNTAIN,
+        TERRAIN.FOREST, TERRAIN.SWAMP, TERRAIN.MOUNTAIN,
+        TERRAIN.SWAMP, TERRAIN.SWAMP, TERRAIN.SWAMP
+    ],
+    [
+        TERRAIN.SWAMP, TERRAIN.SWAMP, TERRAIN.WATER,
+        TERRAIN.SWAMP, TERRAIN.SWAMP, TERRAIN.WATER,
+        TERRAIN.DESERT, TERRAIN.WATER, TERRAIN.WATER,
+        TERRAIN.DESERT, TERRAIN.DESERT, TERRAIN.DESERT,
+        TERRAIN.DESERT, TERRAIN.FOREST, TERRAIN.FOREST,
+        TERRAIN.FOREST, TERRAIN.FOREST, TERRAIN.FOREST
+    ],
+    [
+        TERRAIN.DESERT, TERRAIN.DESERT, TERRAIN.DESERT,
+        TERRAIN.DESERT, TERRAIN.DESERT, TERRAIN.DESERT,
+        TERRAIN.DESERT, TERRAIN.MOUNTAIN, TERRAIN.MOUNTAIN,
+        TERRAIN.FOREST, TERRAIN.WATER, TERRAIN.MOUNTAIN,
+        TERRAIN.FOREST, TERRAIN.WATER, TERRAIN.MOUNTAIN,
+        TERRAIN.FOREST, TERRAIN.WATER, TERRAIN.MOUNTAIN
+    ]
+]
+
 def make_poly_surface(color, shape = 6, angle_start = 45, sf = 1, radius = 30, opacity = 255, border_color=(100, 100, 100), border=True, hollow=False):
     """
     Draws a hexagon with gray borders on a pygame surface.
@@ -122,19 +173,34 @@ def translate_map(map, direction, distance):
 
     return map
 
-def gen_hex_rectangle(width, height):
+
+def gen_hex_rectangle(size, center):
+    width = size[0]
+    height = size[1]
+
+    center_q = center[0]
+    center_r = center[1]
+
     coord = []
-    for r in range(height):
-        if r % 2 != 0:
-            w = width - 1
-        else:
-            w = width
-        
-        for c in range(w):
+    for row in range(height):
+        for col in range(width):
+            if row % 2 != 0:
+                offset = 1
+            else:
+                offset = 0
             coord.append(
-                [c - r//2, r]
-            )           
+                [col - row//2 - offset + center_q, row + center_r]
+            )       
             
 
     return np.array(coord)
 
+
+def get_map_cell_coord(cell_i):
+    coord = []
+
+    coord = gen_hex_rectangle(size = (3, 6), center = ((cell_i % 3 ) * 3 - (cell_i // 3 ) * 3, (cell_i // 3 ) * 6))
+    coord = translate_map(coord, W, 1)
+    coord = translate_map(coord, NW, 5)
+
+    return coord

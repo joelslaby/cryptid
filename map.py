@@ -3,10 +3,19 @@ import hexy as hx
 import pygame as pg
 import map_util as mut
 import os
+from enum import Enum, auto
+
+class ter(Enum):
+    M = auto()
+    S = auto()
+    F = auto()
+    D = auto()
+    W = auto()
 
 class Map:
     def __init__(self):
         self.hex_map = hx.HexMap()
+
         self.size = np.array([300, 300])
         self.width, self.height = self.size
         self.center = self.size / 2
@@ -42,9 +51,30 @@ class Map:
         #             hex_radius
         #         )
         #     )
+        
+        self.size = np.array([700, 700])
+        self.width, self.height = self.size
+        self.center = self.size / 2
 
-        self.hex_map[np.array(coord)] = hexes
+        for cell_i in range(6):
+            coord = mut.get_map_cell_coord(cell_i)
 
+            hex_radius = 30
+
+            hexes = []
+            for hex_i, x in enumerate(coord):
+
+                color = list(mut.TERRCOLORS.keys())[mut.terrain_sets[cell_i][hex_i].value]
+
+                hexes.append(
+                    ExampleHex(
+                        x,
+                        color,
+                        hex_radius
+                    )
+                )
+
+            self.hex_map[np.array(coord)] = hexes
 
         # Init pygame variables
         self.main_surf = None
