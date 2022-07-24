@@ -14,41 +14,52 @@ class ter(Enum):
     W = auto()
 
 class Map:
-    def __init__(self):
+    def __init__(self, terrain_layout, terrain_rotate, structure_sets, clues):
         self.hex_map = hx.HexMap()
         
         self.size = np.array([600, 650])
         self.width, self.height = self.size
         self.center = np.array([100, 75])
-        self.clues = [Clue('3_N_N_GREEN'), Clue('2_N_BEAR_N'), Clue('0_FOREST-DESERT_N_N')]
+        self.clues = clues
+        self.hex_radius = 30
+        self.terrain_rotate = terrain_rotate
+        self.terrain_layout = terrain_layout
+        self.structure_sets = structure_sets
 
-        for cell_i in range(6):
-            coord = mut.get_map_cell_coord(cell_i)
-
-            hex_radius = 30
+        for i, cell_i in enumerate(self.terrain_layout):
+            coord = mut.get_map_cell_coord(i)
 
             hexes = []
-            for hex_i, x in enumerate(coord):
 
-                color = list(mut.TERRCOLORS.keys())[mut.terrain_sets[cell_i][hex_i].value]
+            if cell_i in self.terrain_rotate:
+                terrain_set = mut.rotate_terrain(mut.terrain_sets[cell_i])
+            else:
+                terrain_set = mut.terrain_sets[cell_i]
+
+            for hex_i, x in enumerate(coord):
                 
+                color = list(mut.TERRCOLORS.keys())[terrain_set[hex_i].value]
 
                 temp_hex = hexagon(
                                 x,
                                 color,
-                                hex_radius
+                                self.hex_radius
                             )
                 
                 hexes.append(temp_hex)
 
-                for struct in mut.structure_sets:
+                for struct in self.structure_sets:
                     if np.array_equal(np.array(struct[2]) , x):
                         structure = (struct[0].value, 
                             list(mut.STRUCTCOLORS.keys())[struct[1].value])
                         temp_hex.add_structure(structure[0], structure[1])
 
-                for animals in mut.animal_sets:
-                    if np.array_equal(np.array(animals[1]) , x):
+                for animals in mut.animal_sets[cell_i]:
+                    if cell_i in self.terrain_rotate:
+                        cell_center = -np.array(animals[1]) + np.array([-1, 5])
+                    else:
+                        cell_center = np.array(animals[1])
+                    if np.array_equal(cell_center + coord[0], x):
                         animal = list(mut.ANIMALCOLORS.keys())[animals[0].value]
                         temp_hex.add_animal(animal)
 
@@ -140,8 +151,6 @@ class hexagon(hx.HexTile):
                                            angle_start = 30
                                            )
         self.clue_valid = 1
-
-        # flag if cryptid
         
         
     def add_structure(self, struct, color):

@@ -61,40 +61,8 @@ SE = np.array((0, -1, 1))
 E = np.array((1, -1, 0))
 ALL_DIRECTIONS = np.array([NW, NE, E, SE, SW, W])
 
-terrain_sets = [
-    [
-        TERRAIN.WATER, TERRAIN.WATER, TERRAIN.WATER,
-        TERRAIN.FOREST, TERRAIN.WATER, TERRAIN.WATER,
-        TERRAIN.FOREST, TERRAIN.MOUNTAIN, TERRAIN.MOUNTAIN,
-        TERRAIN.FOREST, TERRAIN.FOREST, TERRAIN.MOUNTAIN,
-        TERRAIN.SWAMP, TERRAIN.SWAMP, TERRAIN.MOUNTAIN,
-        TERRAIN.SWAMP, TERRAIN.SWAMP, TERRAIN.MOUNTAIN
-    ],
-    [
-        TERRAIN.MOUNTAIN, TERRAIN.MOUNTAIN, TERRAIN.WATER,
-        TERRAIN.MOUNTAIN, TERRAIN.MOUNTAIN, TERRAIN.WATER,
-        TERRAIN.MOUNTAIN, TERRAIN.WATER, TERRAIN.WATER,
-        TERRAIN.SWAMP, TERRAIN.DESERT, TERRAIN.WATER,
-        TERRAIN.SWAMP, TERRAIN.DESERT, TERRAIN.DESERT,
-        TERRAIN.SWAMP, TERRAIN.SWAMP, TERRAIN.DESERT
-    ],
-    [
-        TERRAIN.MOUNTAIN, TERRAIN.MOUNTAIN, TERRAIN.DESERT,
-        TERRAIN.WATER, TERRAIN.MOUNTAIN, TERRAIN.DESERT,
-        TERRAIN.WATER, TERRAIN.SWAMP, TERRAIN.SWAMP,
-        TERRAIN.WATER, TERRAIN.SWAMP, TERRAIN.SWAMP,
-        TERRAIN.WATER, TERRAIN.FOREST, TERRAIN.SWAMP,
-        TERRAIN.FOREST, TERRAIN.FOREST, TERRAIN.FOREST
-    ],
-    [
-        TERRAIN.FOREST, TERRAIN.DESERT, TERRAIN.DESERT,
-        TERRAIN.FOREST, TERRAIN.DESERT, TERRAIN.MOUNTAIN, 
-        TERRAIN.FOREST, TERRAIN.DESERT, TERRAIN.MOUNTAIN,
-        TERRAIN.FOREST, TERRAIN.FOREST, TERRAIN.MOUNTAIN,
-        TERRAIN.FOREST, TERRAIN.SWAMP, TERRAIN.MOUNTAIN,
-        TERRAIN.SWAMP, TERRAIN.SWAMP, TERRAIN.SWAMP
-    ],
-    [
+terrain_sets = {
+    1: [
         TERRAIN.SWAMP, TERRAIN.SWAMP, TERRAIN.WATER,
         TERRAIN.SWAMP, TERRAIN.SWAMP, TERRAIN.WATER,
         TERRAIN.DESERT, TERRAIN.WATER, TERRAIN.WATER,
@@ -102,44 +70,78 @@ terrain_sets = [
         TERRAIN.DESERT, TERRAIN.FOREST, TERRAIN.FOREST,
         TERRAIN.FOREST, TERRAIN.FOREST, TERRAIN.FOREST
     ],
-    [
+    2: [
+        TERRAIN.SWAMP, TERRAIN.SWAMP, TERRAIN.SWAMP,
+        TERRAIN.MOUNTAIN, TERRAIN.SWAMP, TERRAIN.FOREST,
+        TERRAIN.MOUNTAIN, TERRAIN.FOREST, TERRAIN.FOREST,
+        TERRAIN.MOUNTAIN, TERRAIN.DESERT, TERRAIN.FOREST,
+        TERRAIN.MOUNTAIN, TERRAIN.DESERT, TERRAIN.FOREST,
+        TERRAIN.DESERT, TERRAIN.DESERT, TERRAIN.FOREST,
+    ],
+    3: [
+        TERRAIN.MOUNTAIN, TERRAIN.SWAMP, TERRAIN.SWAMP,
+        TERRAIN.MOUNTAIN, TERRAIN.SWAMP, TERRAIN.SWAMP,
+        TERRAIN.MOUNTAIN, TERRAIN.FOREST, TERRAIN.FOREST,
+        TERRAIN.MOUNTAIN, TERRAIN.MOUNTAIN, TERRAIN.FOREST,
+        TERRAIN.WATER, TERRAIN.WATER, TERRAIN.FOREST,
+        TERRAIN.WATER, TERRAIN.WATER, TERRAIN.WATER,
+    ],
+    4: [
         TERRAIN.DESERT, TERRAIN.DESERT, TERRAIN.DESERT,
         TERRAIN.DESERT, TERRAIN.DESERT, TERRAIN.DESERT,
         TERRAIN.DESERT, TERRAIN.MOUNTAIN, TERRAIN.MOUNTAIN,
         TERRAIN.FOREST, TERRAIN.WATER, TERRAIN.MOUNTAIN,
         TERRAIN.FOREST, TERRAIN.WATER, TERRAIN.MOUNTAIN,
         TERRAIN.FOREST, TERRAIN.WATER, TERRAIN.MOUNTAIN
+    ],
+    5: [
+        TERRAIN.DESERT, TERRAIN.SWAMP, TERRAIN.SWAMP,
+        TERRAIN.DESERT, TERRAIN.DESERT, TERRAIN.SWAMP,
+        TERRAIN.WATER, TERRAIN.DESERT, TERRAIN.SWAMP,
+        TERRAIN.WATER, TERRAIN.WATER, TERRAIN.MOUNTAIN,
+        TERRAIN.WATER, TERRAIN.MOUNTAIN, TERRAIN.MOUNTAIN,
+        TERRAIN.WATER, TERRAIN.MOUNTAIN, TERRAIN.MOUNTAIN,
+    ],
+    6: [
+        TERRAIN.MOUNTAIN, TERRAIN.MOUNTAIN, TERRAIN.DESERT,
+        TERRAIN.WATER, TERRAIN.MOUNTAIN, TERRAIN.DESERT,
+        TERRAIN.WATER, TERRAIN.SWAMP, TERRAIN.SWAMP,
+        TERRAIN.WATER, TERRAIN.SWAMP, TERRAIN.SWAMP,
+        TERRAIN.WATER, TERRAIN.FOREST, TERRAIN.SWAMP,
+        TERRAIN.FOREST, TERRAIN.FOREST, TERRAIN.FOREST
     ]
-]
+}
 
-
-structure_sets = [
-    [STRUCTURE_TYPE.SHACK, STRUCTURE_COLOR.WHITE, [-2, 3]],
-    [STRUCTURE_TYPE.SHACK, STRUCTURE_COLOR.BLUE, [-3, 5]],
-    [STRUCTURE_TYPE.STONE, STRUCTURE_COLOR.GREEN, [3, 0]],
-    [STRUCTURE_TYPE.STONE, STRUCTURE_COLOR.WHITE, [5, 2]],
-    [STRUCTURE_TYPE.STONE, STRUCTURE_COLOR.BLUE, [1, 4]],
-    [STRUCTURE_TYPE.SHACK, STRUCTURE_COLOR.GREEN, [4, 5]],
-]
-
-animal_sets = [
-    [ANIMAL.COUGAR, [-1, 4]],
-    [ANIMAL.COUGAR, [-1, 5]],
-    [ANIMAL.COUGAR, [-2, 5]],
-    [ANIMAL.COUGAR, [-6, 11]],
-    [ANIMAL.COUGAR, [-5, 10]],
-    [ANIMAL.COUGAR, [-5, 9]],
-    [ANIMAL.COUGAR, [1, 11]],
-    [ANIMAL.COUGAR, [0, 11]],
-    [ANIMAL.COUGAR, [0, 1]],
-    [ANIMAL.BEAR, [4, 0]],
-    [ANIMAL.BEAR, [5, 0]],
-    [ANIMAL.BEAR, [4, 1]],
-    [ANIMAL.BEAR, [7, 0]],
-    [ANIMAL.BEAR, [8, 0]],
-    [ANIMAL.BEAR, [-2, 9]],
-    [ANIMAL.BEAR, [-2, 10]],
-]
+animal_sets = {
+                1: [
+                    [ANIMAL.BEAR, [-2, 3]],
+                    [ANIMAL.BEAR, [-2 ,4]],
+                    [ANIMAL.BEAR, [-3, 5]],
+                ],
+                2: [
+                    [ANIMAL.COUGAR, [2, 0]],
+                    [ANIMAL.COUGAR, [1, 1]],
+                    [ANIMAL.COUGAR, [1, 2]],
+                ],
+                3: [
+                    [ANIMAL.COUGAR, [0, 0]],
+                    [ANIMAL.COUGAR, [1, 0]],
+                    [ANIMAL.COUGAR, [0, 1]],
+                ],
+                4: [
+                    [ANIMAL.COUGAR, [-2, 5]],
+                    [ANIMAL.COUGAR, [-3, 5]],
+                ],
+                5: [
+                    [ANIMAL.BEAR, [-2, 4]],
+                    [ANIMAL.BEAR, [-2 ,5]],
+                    [ANIMAL.BEAR, [-3, 5]],
+                ],
+                6: [
+                    [ANIMAL.BEAR, [1, 0]],
+                    [ANIMAL.BEAR, [2, 0]],
+                ]
+        }
 
 def make_poly_surface(color, shape = 6, angle_start = 45, sf = 1, radius = 30, opacity = 255, border_color=(100, 100, 100), border=True, hollow=False):
     """
@@ -230,9 +232,15 @@ def get_map_cell_coord(cell_i):
     coord = []
 
     coord = gen_hex_rectangle(size = (3, 6), center = ((cell_i % 3 ) * 3 - (cell_i // 3 ) * 3, (cell_i // 3 ) * 6))
+
     # coord = translate_map(coord, W, 1)
     # coord = translate_map(coord, NW, 5)
 
     return coord
+
+def rotate_terrain(terrain_set):
+    terrain_set = np.reshape(np.array(terrain_set), (6, 3))
+    terrain_set = np.flipud(np.fliplr(terrain_set)).flatten()
+    return terrain_set
 
 
