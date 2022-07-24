@@ -16,7 +16,7 @@ class Map:
         coord = mut.translate_map(coord, mut.W, 1)
         coord = mut.translate_map(coord, mut.NW, 3)
 
-        hex_radius = 20
+        hex_radius = 30
         hexes = []
         
         for (x, key) in zip(coord, mut.TERRCOLORS.keys()):
@@ -95,7 +95,7 @@ class ExampleHex(hx.HexTile):
         self.position = hx.axial_to_pixel(self.axial_coordinates, radius)
         self.color = color
         self.radius = radius
-        self.image = mut.make_hex_surface(color, radius)
+        self.image = mut.make_hex_surface(color, radius = radius)
         self.value = None
 
     def set_value(self, value):
