@@ -1,35 +1,42 @@
+from cv2 import TermCriteria_COUNT
 import numpy as np
 import hexy as hx
 import pygame as pg
 import map_util as mut
 import os
+from enum import Enum, auto
+
+class ter(Enum):
+    M = auto()
+    S = auto()
+    F = auto()
+    D = auto()
+    W = auto()
 
 class Map:
     def __init__(self):
         self.hex_map = hx.HexMap()
-        self.size = np.array([600, 600])
+        self.size = np.array([700, 700])
         self.width, self.height = self.size
         self.center = self.size / 2
 
-        coord = mut.gen_hex_rectangle(3, 3)
+        for cell_i in range(6):
+            coord = mut.get_map_cell_coord(cell_i)
 
-        coord = mut.translate_map(coord, mut.W, 1)
-        coord = mut.translate_map(coord, mut.NW, 3)
+            hex_radius = 30
 
-        hex_radius = 50
-
-        hexes = []
-        for x in coord:
-            hexes.append(
-                ExampleHex(
-                    x,
-                    mut.COLORS['red'],
-                    hex_radius
+            hexes = []
+            for hex_i, x in enumerate(coord):
+        
+                hexes.append(
+                    ExampleHex(
+                        x,
+                        mut.COLORS[mut.terrain_sets[cell_i][hex_i]],
+                        hex_radius
+                    )
                 )
-            )
 
-        self.hex_map[np.array(coord)] = hexes
-
+            self.hex_map[np.array(coord)] = hexes
 
         # Init pygame variables
         self.main_surf = None

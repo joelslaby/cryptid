@@ -1,6 +1,7 @@
 import numpy as np
 import hexy as hx
 import pygame as pg
+from sklearn.metrics import adjusted_rand_score
 
 COLORS = {
     'red': np.array([244, 98, 105]),
@@ -18,6 +19,57 @@ W = np.array((-1, 1, 0))
 SW = np.array((-1, 0, 1))
 SE = np.array((0, -1, 1))
 E = np.array((1, -1, 0))
+
+terrain_sets = [
+    [   
+        'red', 'red', 'red',
+        'blueD', 'red', 'red',
+        'blueD', 'green','green',
+        'blueD', 'blueD', 'green',
+        'orange', 'orange', 'green',
+        'orange', 'orange', 'green'
+    ],
+    [   
+        'red', 'red', 'red',
+        'blueD', 'red', 'red',
+        'blueD', 'green','green',
+        'blueD', 'blueD', 'green',
+        'orange', 'orange', 'green',
+        'orange', 'orange', 'green'
+    ],
+    [   
+        'red', 'red', 'red',
+        'blueD', 'red', 'red',
+        'blueD', 'green','green',
+        'blueD', 'blueD', 'green',
+        'orange', 'orange', 'green',
+        'orange', 'orange', 'green'
+    ],
+    [   
+        'red', 'red', 'red',
+        'blueD', 'red', 'red',
+        'blueD', 'green','green',
+        'blueD', 'blueD', 'green',
+        'orange', 'orange', 'green',
+        'orange', 'orange', 'green'
+    ],
+    [   
+        'red', 'red', 'red',
+        'blueD', 'red', 'red',
+        'blueD', 'green','green',
+        'blueD', 'blueD', 'green',
+        'orange', 'orange', 'green',
+        'orange', 'orange', 'green'
+    ],
+    [   
+        'red', 'red', 'red',
+        'blueD', 'red', 'red',
+        'blueD', 'green','green',
+        'blueD', 'blueD', 'green',
+        'orange', 'orange', 'green',
+        'orange', 'orange', 'green'
+    ]
+]
 
 def make_hex_surface(color, radius, border_color=(100, 100, 100), border=True, hollow=False):
     """
@@ -73,18 +125,33 @@ def translate_map(map, direction, distance):
 
     return map
 
-def gen_hex_rectangle(width, height):
+
+def gen_hex_rectangle(size, center):
+    width = size[0]
+    height = size[1]
+
+    center_q = center[0]
+    center_r = center[1]
+
     coord = []
-    for r in range(height):
-        if r % 2 != 0:
-            w = width - 1
-        else:
-            w = width
-        
-        for c in range(w):
+    for row in range(height):
+        for col in range(width):
+            if row % 2 != 0:
+                offset = 1
+            else:
+                offset = 0
             coord.append(
-                [c - r//2, r]
-            )           
+                [col - row//2 - offset + center_q, row + center_r]
+            )       
             
 
     return np.array(coord)
+
+def get_map_cell_coord(cell_i):
+    coord = []
+
+    coord = gen_hex_rectangle(size = (3, 6), center = ((cell_i % 3 ) * 3 - (cell_i // 3 ) * 3, (cell_i // 3 ) * 6))
+    coord = translate_map(coord, W, 1)
+    coord = translate_map(coord, NW, 5)
+
+    return coord
