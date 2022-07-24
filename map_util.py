@@ -60,6 +60,17 @@ SW = np.array((-1, 0, 1))
 SE = np.array((0, -1, 1))
 E = np.array((1, -1, 0))
 
+"""
+#Flat
+NE = np.array((1, 0, -1))
+NW = np.array((-1, 1, 0))
+N = np.array((0, 1, -1))
+SW = np.array((-1, 0, 1))
+SE = np.array((1, -1, 0))
+S = np.array((0, -1, 1))
+"""
+
+
 terrain_sets = [
     [
         TERRAIN.WATER, TERRAIN.WATER, TERRAIN.WATER,
@@ -126,7 +137,7 @@ def make_hex_surface(terr, shape = 6, radius = 20, opacity = 255, border_color=(
 
     :return: A pygame surface with a hexagon drawn on it
     """
-    angles_in_radians = np.deg2rad([60 * i for i in range(shape)])
+    angles_in_radians = np.deg2rad([60 * i - 30 for i in range(shape)])
     x = radius * np.cos(angles_in_radians)
     y = radius * np.sin(angles_in_radians)
     points = np.round(np.vstack([x, y]).T)
@@ -191,6 +202,7 @@ def gen_hex_rectangle(size, center):
             coord.append(
                 [col - row//2 - offset + center_q, row + center_r]
             )
+    return coord
 
 
 

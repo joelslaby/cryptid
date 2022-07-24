@@ -1,10 +1,10 @@
 import map
+import clue
 
 test_map = map.Map()
 
 while test_map.main_loop():
     test_map.draw()
-
 
 
 """
@@ -50,9 +50,31 @@ def howManyMatches(self)
     <for loop end>
 """
 
+ClueArray = []
 
+Clue_Alpha = clue.Clue()
+Clue_Alpha.isTerrainOn = "Desert/Mountain";
+ClueArray.append(Clue_Alpha)
 
+Clue_Beta = clue.Clue()
+Clue_Beta.isTerrainWithin = "Desert"
+ClueArray.append(Clue_Beta)
 
+Clue_Gamma = clue.Clue()
+Clue_Gamma.isTerrainWithin = "Water"
+ClueArray.append(Clue_Gamma)
+
+Clue_Delta = clue.Clue()
+Clue_Delta.isTerrainWithin = "Mountain"
+ClueArray.append(Clue_Delta)
+
+Clue_Epsilon = clue.Clue()
+Clue_Epsilon.isTerrainWithin = "Forest"
+ClueArray.append(Clue_Epsilon)
+
+for i in range(-6, 7):
+    for j in range(-5, 5):
+        print("Disaster")
 
 
 

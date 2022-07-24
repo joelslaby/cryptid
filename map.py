@@ -86,14 +86,24 @@ class Map:
         hexagons = list(self.hex_map.values())
         hex_positions = np.array([hexagon.get_draw_position() for hexagon in hexagons])
         sorted_indexes = np.argsort(hex_positions[:, 1])
+
+
+
+
+
         for index in sorted_indexes:
             self.main_surf.blit(hexagons[index].image, hex_positions[index] + self.center)
 
+        for hexagon in list(self.hex_map.values()):
+            text = self.font.render(str(hexagon.axial_coordinates[0]), False, (0, 0, 0))
+            text.set_alpha(160)
+            text_pos = hexagon.get_position() + self.center
+            text_pos -= (text.get_width() / 2, text.get_height() / 2)
+            self.main_surf.blit(text, text_pos)
         # Update screen at 30 frames per second
         pg.display.update()
-        self.main_surf.fill(mut.COLORS['white'])
+        self.main_surf.fill('white')
         self.clock.tick(30)
-
 
     def quit_app(self):
         pg.quit()
@@ -106,8 +116,9 @@ class ExampleHex(hx.HexTile):
         self.position = hx.axial_to_pixel(self.axial_coordinates, radius)
         self.color = color
         self.radius = radius
-        self.image = mut.make_hex_surface(color, radius)
+        self.image = mut.make_hex_surface(color, radius = radius)
         self.value = None
+        self.doesMatch = None
 
     def set_value(self, value):
         self.value = value
