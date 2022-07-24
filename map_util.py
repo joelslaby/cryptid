@@ -11,7 +11,7 @@ TERRCOLORS = {
     'water': np.array([85, 163, 193]),
     'none': np.array([255, 255, 255]),
 }
-    
+
 STRUCTCOLORS = {
     'blue': np.array([53, 111, 163]),
     'white': np.array([255, 255, 255]),
@@ -31,30 +31,45 @@ class TERRAIN(Enum):
     SWAMP    = 3
     WATER    = 4
     NONE     = 5
-    
+
 class ANIMAL(Enum):
     NONE   = 0
     BEAR   = 1
     COUGAR = 2
-    
+
 class STRUCTURE_TYPE(Enum):
     NONE  = 0
     SHACK = 1
     STONE = 2
-    
+
 class STRUCTURE_COLOR(Enum):
     BLUE   = 0
     WHITE  = 1
     GREEN  = 2
     BLACK  = 3
-    
 
+# On the order of qsr
+
+
+
+#Pointed
 NE = np.array((1, 0, -1))
 NW = np.array((0, 1, -1))
 W = np.array((-1, 1, 0))
 SW = np.array((-1, 0, 1))
 SE = np.array((0, -1, 1))
 E = np.array((1, -1, 0))
+
+'''
+#Flat
+NE = np.array((1, 0, -1))
+NW = np.array((-1, 1, 0))
+N = np.array((0, 1, -1))
+SW = np.array((-1, 0, 1))
+SE = np.array((1, -1, 0))
+S = np.array((0, -1, 1))
+'''
+
 
 def make_hex_surface(terr, shape = 6, radius = 20, opacity = 255, border_color=(100, 100, 100), border=True, hollow=False):
     """
@@ -68,10 +83,10 @@ def make_hex_surface(terr, shape = 6, radius = 20, opacity = 255, border_color=(
     :param border_color: Color of the border.
     :param border: Draws border if True
     :param hollow: Does not fill hex with color if True.
-    
+
     :return: A pygame surface with a hexagon drawn on it
     """
-    angles_in_radians = np.deg2rad([60 * i + 30 for i in range(shape)])
+    angles_in_radians = np.deg2rad([60 * i for i in range(shape)])
     x = radius * np.cos(angles_in_radians)
     y = radius * np.sin(angles_in_radians)
     points = np.round(np.vstack([x, y]).T)
@@ -84,7 +99,7 @@ def make_hex_surface(terr, shape = 6, radius = 20, opacity = 255, border_color=(
     maxy = sorted_y[-1]
 
     sorted_idxs = np.lexsort((points[:, 0], points[:, 1]))
-    
+
     # Main surface dimensions
     surf_size = np.array((maxx - minx, maxy - miny)) * 2 + 1
     center = surf_size / 2
@@ -101,9 +116,9 @@ def make_hex_surface(terr, shape = 6, radius = 20, opacity = 255, border_color=(
 
 
     points[sorted_idxs[-1:-4:-1]] += [0, 1]
-    
+
     # if border is true is true draw border.
-    
+
     if border:
         pg.draw.lines(surface, border_color, True, points + center, 1)
 
@@ -120,17 +135,16 @@ def translate_map(map, direction, distance):
 
 def gen_hex_rectangle(width, height):
     coord = []
-    for r in range(height):
+    for r in range(width):
         if r % 2 != 0:
             w = width - 1
         else:
             w = width
-        
+
         for c in range(w):
             coord.append(
                 [c - r//2, r]
-            )           
-            
+            )
+
 
     return np.array(coord)
-
