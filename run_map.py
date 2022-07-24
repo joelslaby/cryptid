@@ -74,8 +74,20 @@ ClueArray.append(Clue_Epsilon)
 
 for i in range(-6, 7):
     for j in range(-5, 5):
-        print("Disaster")
-
+        for c in ClueArray:
+            if c.isTerrainOn is not None:
+                print("TO")
+            elif c.isTerrainWithin is not None:
+                print("TW")
+            elif c.isStructure is not None:
+                print("S")
+            elif c.isAnimal is not None:
+                print("A")
+            elif c.isColor is not None:
+                print("C")
+            else:
+                print("N")
+            #<tile>.doesMatch = False
 
 
 test_map.quit_app()
