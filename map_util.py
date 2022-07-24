@@ -2,6 +2,7 @@ import numpy as np
 import hexy as hx
 import pygame as pg
 from enum import Enum
+from enum import IntEnum
 
 TERRCOLORS = {
     'desert': np.array([255, 185, 15]),
@@ -16,12 +17,13 @@ STRUCTCOLORS = {
     'blue': np.array([53, 111, 163]),
     'white': np.array([255, 255, 255]),
     'green': np.array([0, 255, 0]),
+    'black': np.array([2, 0, 0])
 }
 
 ANIMALCOLORS = {
-    'none' :   np.array([0,0,0,0]),
-    'bear' :   np.array([0,0,0,255]),
-    'cougar' : np.array([255,0,0,255]),
+    'none' :   np.array([0,0,0]),
+    'bear' :   np.array([2,0,0]),
+    'cougar' : np.array([255,0,0]),
     }
 
 class TERRAIN(Enum):
@@ -37,16 +39,17 @@ class ANIMAL(Enum):
     BEAR   = 1
     COUGAR = 2
     
-class STRUCTURE_TYPE(Enum):
-    NONE  = 0
-    SHACK = 1
-    STONE = 2
+class STRUCTURE_TYPE(IntEnum):
+    NONE  = 6
+    SHACK = 3
+    STONE = 8
     
 class STRUCTURE_COLOR(Enum):
     BLUE   = 0
     WHITE  = 1
     GREEN  = 2
     BLACK  = 3
+    NONE   = 4
     
 
 NE = np.array((1, 0, -1))
@@ -107,7 +110,7 @@ terrain_sets = [
     ]
 ]
 
-def make_hex_surface(terr, shape = 6, radius = 20, opacity = 255, border_color=(100, 100, 100), border=True, hollow=False):
+def make_poly_surface(color, shape = 6, angle_start = 45, sf = 1, radius = 30, opacity = 255, border_color=(100, 100, 100), border=True, hollow=False):
     """
     Draws a hexagon with gray borders on a pygame surface.
     :param terr: The terrain of the hex which determines its color.
@@ -122,9 +125,11 @@ def make_hex_surface(terr, shape = 6, radius = 20, opacity = 255, border_color=(
     
     :return: A pygame surface with a hexagon drawn on it
     """
-    angles_in_radians = np.deg2rad([60 * i + 30 for i in range(shape)])
-    x = radius * np.cos(angles_in_radians)
-    y = radius * np.sin(angles_in_radians)
+        
+    angles_in_radians = np.deg2rad([(360 // shape) * i + angle_start for i in range(shape)])
+    
+    x = sf * radius * np.cos(angles_in_radians)
+    y = sf * radius * np.sin(angles_in_radians)
     points = np.round(np.vstack([x, y]).T)
 
     sorted_x = sorted(points[:, 0])
@@ -142,8 +147,7 @@ def make_hex_surface(terr, shape = 6, radius = 20, opacity = 255, border_color=(
     surface = pg.Surface(surf_size)
     surface.set_colorkey((0, 0, 0))
 
-    # Set fill color of terrain and opacity of fill.
-    color = TERRCOLORS[terr]
+    # Set fill color of shape and opacity of fill.
     surface.set_alpha(opacity)
 
     # fill if not hollow.
@@ -155,7 +159,7 @@ def make_hex_surface(terr, shape = 6, radius = 20, opacity = 255, border_color=(
     
     # if border is true is true draw border.
     
-    if border:
+    if border or hollow:
         pg.draw.lines(surface, border_color, True, points + center, 1)
 
     return surface
