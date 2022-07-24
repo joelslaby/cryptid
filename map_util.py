@@ -56,59 +56,56 @@ SW = np.array((-1, 0, 1))
 SE = np.array((0, -1, 1))
 E = np.array((1, -1, 0))
 
-
-# terrain_sets = [
-#     [   
-#         'red', 'red', 'red',
-#         'blueD', 'red', 'red',
-#         'blueD', 'green','green',
-#         'blueD', 'blueD', 'green',
-#         'orange', 'orange', 'green',
-#         'orange', 'orange', 'green'
-#     ],
-#     [   
-#         'red', 'red', 'red',
-#         'blueD', 'red', 'red',
-#         'blueD', 'green','green',
-#         'blueD', 'blueD', 'green',
-#         'orange', 'orange', 'green',
-#         'orange', 'orange', 'green'
-#     ],
-#     [   
-#         'red', 'red', 'red',
-#         'blueD', 'red', 'red',
-#         'blueD', 'green','green',
-#         'blueD', 'blueD', 'green',
-#         'orange', 'orange', 'green',
-#         'orange', 'orange', 'green'
-#     ],
-#     [   
-#         'red', 'red', 'red',
-#         'blueD', 'red', 'red',
-#         'blueD', 'green','green',
-#         'blueD', 'blueD', 'green',
-#         'orange', 'orange', 'green',
-#         'orange', 'orange', 'green'
-#     ],
-#     [   
-#         'red', 'red', 'red',
-#         'blueD', 'red', 'red',
-#         'blueD', 'green','green',
-#         'blueD', 'blueD', 'green',
-#         'orange', 'orange', 'green',
-#         'orange', 'orange', 'green'
-#     ],
-#     [   
-#         'red', 'red', 'red',
-#         'blueD', 'red', 'red',
-#         'blueD', 'green','green',
-#         'blueD', 'blueD', 'green',
-#         'orange', 'orange', 'green',
-#         'orange', 'orange', 'green'
-#     ]
-# ]
-
-# def make_hex_surface(color, radius, border_color=(100, 100, 100), border=True, hollow=False):
+terrain_sets = [
+    [
+        TERRAIN.WATER, TERRAIN.WATER, TERRAIN.WATER,
+        TERRAIN.FOREST, TERRAIN.WATER, TERRAIN.WATER,
+        TERRAIN.FOREST, TERRAIN.MOUNTAIN, TERRAIN.MOUNTAIN,
+        TERRAIN.FOREST, TERRAIN.FOREST, TERRAIN.MOUNTAIN,
+        TERRAIN.SWAMP, TERRAIN.SWAMP, TERRAIN.MOUNTAIN,
+        TERRAIN.SWAMP, TERRAIN.SWAMP, TERRAIN.MOUNTAIN
+    ],
+    [
+        TERRAIN.MOUNTAIN, TERRAIN.MOUNTAIN, TERRAIN.WATER,
+        TERRAIN.MOUNTAIN, TERRAIN.MOUNTAIN, TERRAIN.WATER,
+        TERRAIN.MOUNTAIN, TERRAIN.WATER, TERRAIN.WATER,
+        TERRAIN.SWAMP, TERRAIN.DESERT, TERRAIN.WATER,
+        TERRAIN.SWAMP, TERRAIN.DESERT, TERRAIN.DESERT,
+        TERRAIN.SWAMP, TERRAIN.SWAMP, TERRAIN.DESERT
+    ],
+    [
+        TERRAIN.MOUNTAIN, TERRAIN.MOUNTAIN, TERRAIN.DESERT,
+        TERRAIN.WATER, TERRAIN.MOUNTAIN, TERRAIN.DESERT,
+        TERRAIN.WATER, TERRAIN.SWAMP, TERRAIN.SWAMP,
+        TERRAIN.WATER, TERRAIN.SWAMP, TERRAIN.SWAMP,
+        TERRAIN.WATER, TERRAIN.FOREST, TERRAIN.SWAMP,
+        TERRAIN.FOREST, TERRAIN.FOREST, TERRAIN.FOREST
+    ],
+    [
+        TERRAIN.FOREST, TERRAIN.DESERT, TERRAIN.DESERT,
+        TERRAIN.FOREST, TERRAIN.DESERT, TERRAIN.MOUNTAIN, 
+        TERRAIN.FOREST, TERRAIN.DESERT, TERRAIN.MOUNTAIN,
+        TERRAIN.FOREST, TERRAIN.FOREST, TERRAIN.MOUNTAIN,
+        TERRAIN.FOREST, TERRAIN.SWAMP, TERRAIN.MOUNTAIN,
+        TERRAIN.SWAMP, TERRAIN.SWAMP, TERRAIN.SWAMP
+    ],
+    [
+        TERRAIN.SWAMP, TERRAIN.SWAMP, TERRAIN.WATER,
+        TERRAIN.SWAMP, TERRAIN.SWAMP, TERRAIN.WATER,
+        TERRAIN.DESERT, TERRAIN.WATER, TERRAIN.WATER,
+        TERRAIN.DESERT, TERRAIN.DESERT, TERRAIN.DESERT,
+        TERRAIN.DESERT, TERRAIN.FOREST, TERRAIN.FOREST,
+        TERRAIN.FOREST, TERRAIN.FOREST, TERRAIN.FOREST
+    ],
+    [
+        TERRAIN.DESERT, TERRAIN.DESERT, TERRAIN.DESERT,
+        TERRAIN.DESERT, TERRAIN.DESERT, TERRAIN.DESERT,
+        TERRAIN.DESERT, TERRAIN.MOUNTAIN, TERRAIN.MOUNTAIN,
+        TERRAIN.FOREST, TERRAIN.WATER, TERRAIN.MOUNTAIN,
+        TERRAIN.FOREST, TERRAIN.WATER, TERRAIN.MOUNTAIN,
+        TERRAIN.FOREST, TERRAIN.WATER, TERRAIN.MOUNTAIN
+    ]
+]
 
 def make_hex_surface(terr, shape = 6, radius = 20, opacity = 255, border_color=(100, 100, 100), border=True, hollow=False):
     """
@@ -193,6 +190,7 @@ def gen_hex_rectangle(size, center):
             
 
     return np.array(coord)
+
 
 def get_map_cell_coord(cell_i):
     coord = []

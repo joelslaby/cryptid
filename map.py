@@ -1,4 +1,3 @@
-from cv2 import TermCriteria_COUNT
 import numpy as np
 import hexy as hx
 import pygame as pg
@@ -44,11 +43,13 @@ class Map:
 
             hexes = []
             for hex_i, x in enumerate(coord):
-        
+
+                color = list(mut.TERRCOLORS.keys())[mut.terrain_sets[cell_i][hex_i].value]
+
                 hexes.append(
                     ExampleHex(
                         x,
-                        mut.COLORS[mut.terrain_sets[cell_i][hex_i]],
+                        color,
                         hex_radius
                     )
                 )
