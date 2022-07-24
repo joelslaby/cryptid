@@ -121,24 +121,55 @@ structure_sets = [
     [STRUCTURE_TYPE.SHACK, STRUCTURE_COLOR.GREEN, [4, 5]],
 ]
 
-animal_sets = [
-    [ANIMAL.COUGAR, [-1, 4]],
-    [ANIMAL.COUGAR, [-1, 5]],
-    [ANIMAL.COUGAR, [-2, 5]],
-    [ANIMAL.COUGAR, [-6, 11]],
-    [ANIMAL.COUGAR, [-5, 10]],
-    [ANIMAL.COUGAR, [-5, 9]],
-    [ANIMAL.COUGAR, [1, 11]],
-    [ANIMAL.COUGAR, [0, 11]],
-    [ANIMAL.COUGAR, [0, 1]],
-    [ANIMAL.BEAR, [4, 0]],
-    [ANIMAL.BEAR, [5, 0]],
-    [ANIMAL.BEAR, [4, 1]],
-    [ANIMAL.BEAR, [7, 0]],
-    [ANIMAL.BEAR, [8, 0]],
-    [ANIMAL.BEAR, [-2, 9]],
-    [ANIMAL.BEAR, [-2, 10]],
-]
+# animal_sets = [
+#     [ANIMAL.COUGAR, [-1, 4]],
+#     [ANIMAL.COUGAR, [-1, 5]],
+#     [ANIMAL.COUGAR, [-2, 5]],
+#     [ANIMAL.COUGAR, [-6, 11]],
+#     [ANIMAL.COUGAR, [-5, 10]],
+#     [ANIMAL.COUGAR, [-5, 9]],
+#     [ANIMAL.COUGAR, [1, 11]],
+#     [ANIMAL.COUGAR, [0, 11]],
+#     [ANIMAL.COUGAR, [0, 1]],
+#     [ANIMAL.BEAR, [4, 0]],
+#     [ANIMAL.BEAR, [5, 0]],
+#     [ANIMAL.BEAR, [4, 1]],
+#     [ANIMAL.BEAR, [7, 0]],
+#     [ANIMAL.BEAR, [8, 0]],
+#     [ANIMAL.BEAR, [-2, 9]],
+#     [ANIMAL.BEAR, [-2, 10]],
+# ]
+
+animal_sets = {
+                1: [
+                    [ANIMAL.BEAR, [-2, 3]],
+                    [ANIMAL.BEAR, [-2 ,4]],
+                    [ANIMAL.BEAR, [-3, 5]],
+                ],
+                2: [
+                    [ANIMAL.COUGAR, [2, 0]],
+                    [ANIMAL.COUGAR, [1, 1]],
+                    [ANIMAL.COUGAR, [1, 2]],
+                ],
+                3: [
+                    [ANIMAL.COUGAR, [0, 0]],
+                    [ANIMAL.COUGAR, [1, 0]],
+                    [ANIMAL.COUGAR, [0, 1]],
+                ],
+                4: [
+                    [ANIMAL.COUGAR, [-2, 5]],
+                    [ANIMAL.COUGAR, [-3, 5]],
+                ],
+                5: [
+                    [ANIMAL.BEAR, [-2, 4]],
+                    [ANIMAL.BEAR, [-2 ,5]],
+                    [ANIMAL.BEAR, [-3, 5]],
+                ],
+                6: [
+                    [ANIMAL.BEAR, [1, 0]],
+                    [ANIMAL.BEAR, [2, 0]],
+                ]
+        }
 
 def make_poly_surface(color, shape = 6, angle_start = 45, sf = 1, radius = 30, opacity = 255, border_color=(100, 100, 100), border=True, hollow=False):
     """

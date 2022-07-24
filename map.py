@@ -22,12 +22,10 @@ class Map:
         self.center = np.array([100, 75])
         self.clues = [Clue('3_N_N_GREEN'), Clue('2_N_BEAR_N'), Clue('0_FOREST-DESERT_N_N')]
 
-        terrain_rotate = [3, 4, 6, 1]
+        terrain_rotate = [3, 5, 2]
 
-        for i, cell_i in enumerate([3, 4, 2, 6, 5, 1]):
+        for i, cell_i in enumerate([3, 5, 6, 2, 1, 4]):
             coord = mut.get_map_cell_coord(i)
-
-            hex_radius = 30
 
             hexes = []
 
@@ -43,7 +41,7 @@ class Map:
                 temp_hex = hexagon(
                                 x,
                                 color,
-                                hex_radius
+                                self.hex_radius
                             )
                 
                 hexes.append(temp_hex)
@@ -54,8 +52,12 @@ class Map:
                             list(mut.STRUCTCOLORS.keys())[struct[1].value])
                         temp_hex.add_structure(structure[0], structure[1])
 
-                for animals in mut.animal_sets:
-                    if np.array_equal(np.array(animals[1]) , x):
+                for animals in mut.animal_sets[cell_i]:
+                    if cell_i in terrain_rotate:
+                        cell_center = -np.array(animals[1]) + np.array([-1, 5])
+                    else:
+                        cell_center = np.array(animals[1])
+                    if np.array_equal(cell_center + coord[0], x):
                         animal = list(mut.ANIMALCOLORS.keys())[animals[0].value]
                         temp_hex.add_animal(animal)
 
@@ -147,8 +149,6 @@ class hexagon(hx.HexTile):
                                            angle_start = 30
                                            )
         self.clue_valid = 1
-
-        # flag if cryptid
         
         
     def add_structure(self, struct, color):
