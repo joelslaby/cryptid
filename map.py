@@ -82,19 +82,9 @@ class Map:
                         animal = list(mut.ANIMALCOLORS.keys())[animals[0].value]
                         temp_hex.add_animal(animal)
 
-
-
-                # animal = list(mut.ANIMALCOLORS.keys())[mut.animal_sets[cell_i][hex_i].value]
-            # structure = (mut.structure_type_sets[cell_i][hex_i].value, 
-            #         list(mut.STRUCTCOLORS.keys())[mut.structure_color_sets[cell_i][hex_i].value])
-
-                # temp_hex.add_animal(animal)
-                # temp_hex.add_structure(structure[0], structure[1])
-
-                # coord = mut.translate_map(coord, mut.W, 1)
-                # coord = mut.translate_map(coord, mut.NW, 5)
-
             self.hex_map[np.array(coord)] = hexes
+
+            # print(self.hex_map[np.array([0,0])])
 
         # Init pygame variables
         self.main_surf = None
