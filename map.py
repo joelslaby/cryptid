@@ -17,16 +17,15 @@ class Map:
     def __init__(self):
         self.hex_map = hx.HexMap()
         
-        self.size = np.array([1200, 1200])
+        self.size = np.array([600, 650])
         self.width, self.height = self.size
-        self.center = self.size / 2
+        self.center = np.array([100,75])
+        self.hex_radius = 30
 
-        terrain_rotate = [3, 4, 6, 1]
+        terrain_rotate = [3, 5, 2]
 
-        for i, cell_i in enumerate([3, 4, 2, 6, 5, 1]):
+        for i, cell_i in enumerate([3, 5, 6, 2, 1, 4]):
             coord = mut.get_map_cell_coord(i)
-
-            hex_radius = 30
 
             hexes = []
 
@@ -42,7 +41,7 @@ class Map:
                 temp_hex = hexagon(
                                 x,
                                 color,
-                                hex_radius
+                                self.hex_radius
                             )
                 
                 hexes.append(temp_hex)
@@ -53,8 +52,12 @@ class Map:
                             list(mut.STRUCTCOLORS.keys())[struct[1].value])
                         temp_hex.add_structure(structure[0], structure[1])
 
-                for animals in mut.animal_sets:
-                    if np.array_equal(np.array(animals[1]) , x):
+                for animals in mut.animal_sets[cell_i]:
+                    if cell_i in terrain_rotate:
+                        cell_center = -np.array(animals[1]) + np.array([-1, 5])
+                    else:
+                        cell_center = np.array(animals[1])
+                    if np.array_equal(cell_center + coord[0], x):
                         animal = list(mut.ANIMALCOLORS.keys())[animals[0].value]
                         temp_hex.add_animal(animal)
 
@@ -146,8 +149,6 @@ class hexagon(hx.HexTile):
                                            angle_start = 30
                                            )
         self.clue_valid = 1
-
-        # flag if cryptid
         
         
     def add_structure(self, struct, color):
@@ -250,30 +251,3 @@ def check_hex(map, hex):
     )
 
     return hex.clue_valid
-
-# def translate_map(map, direction, distance):
-#     direction = hx.cube_to_axial(np.array([direction]))
-#     print(type(map))
-#     temp_map = map
-#     for hex_coord in temp_map:
-#         hex_coord = np.fromstring(hex_coord, dtype=int, sep=',')
-#         hex = map[hex_coord][0]
-#         print(hex)
-
-#         print(hex.axial_coordinates)
-#         old_coord = hex.axial_coordinates
-
-#         hex.axial_coordinates += distance * np.squeeze(direction)
-
-#         print(hex.axial_coordinates)
-
-# # self.hex_map[np.array(coord)] = hexes
-#         del map[old_coord]
-#         print(map[hex.axial_coordinates])
-#         map[hex.axial_coordinates] = [hex]
-
-#         # print(hex_coord, distance, np.squeeze(direction))
-#         # print(hex_coord + distance * np.squeeze(direction))
-#         # map[hex_coord + distance * np.squeeze(direction)] = map[hex_coord]
-
-#     return map
