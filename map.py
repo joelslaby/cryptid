@@ -21,16 +21,23 @@ class Map:
         self.width, self.height = self.size
         self.center = self.size / 2
 
-        for cell_i in range(6):
-            coord = mut.get_map_cell_coord(cell_i)
+        terrain_rotate = [3, 4, 6, 1]
+
+        for i, cell_i in enumerate([3, 4, 2, 6, 5, 1]):
+            coord = mut.get_map_cell_coord(i)
 
             hex_radius = 30
 
             hexes = []
-            for hex_i, x in enumerate(coord):
 
-                color = list(mut.TERRCOLORS.keys())[mut.terrain_sets[cell_i][hex_i].value]
+            if cell_i in terrain_rotate:
+                terrain_set = mut.rotate_terrain(mut.terrain_sets[cell_i])
+            else:
+                terrain_set = mut.terrain_sets[cell_i]
+
+            for hex_i, x in enumerate(coord):
                 
+                color = list(mut.TERRCOLORS.keys())[terrain_set[hex_i].value]
 
                 temp_hex = hexagon(
                                 x,
