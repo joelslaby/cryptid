@@ -20,7 +20,7 @@ class Map:
         self.size = np.array([600, 650])
         self.width, self.height = self.size
         self.center = np.array([100, 75])
-        self.clues = [Clue('3_N_N_GREEN'), Clue('2_N_BEAR_N'), Clue('0_WATER_N_N')]
+        self.clues = [Clue('3_N_N_GREEN'), Clue('2_N_BEAR_N'), Clue('0_FOREST-DESERT_N_N')]
 
         for cell_i in range(6):
             coord = mut.get_map_cell_coord(cell_i)
@@ -38,8 +38,6 @@ class Map:
                                 color,
                                 hex_radius
                             )
-                
-                myClue = Clue('3_N_N_GREEN')
                 
                 hexes.append(temp_hex)
 
@@ -241,9 +239,19 @@ def check_within(map, hex: hexagon, check: Enum, radius=0):
 
 def check_hex(map, hex, clue_vect):
     
+    temp_clue_valid = False
+    
     for clue in clue_vect:
         rad, search = clue.check()
-        hex.clue_valid &= check_within(map, hex, search, radius = rad)
+        if (type(search) == list):
+            for s in search:
+                temp_clue_valid = (temp_clue_valid or 
+                check_within(map, hex, s, radius = rad)
+                )
+            hex.clue_valid &= temp_clue_valid
+
+        else:  
+            hex.clue_valid &= check_within(map, hex, search, radius = rad)
     # hex.clue_valid = ((check_within(map, hex, mut.ANIMAL.BEAR, radius = 2)) and
     #                 (check_within(map, hex, mut.TERRAIN.FOREST) or check_within(map, hex, mut.TERRAIN.DESERT)) and
     #                 (check_within(map, hex, mut.STRUCTURE_COLOR.GREEN, radius = 3))
@@ -304,9 +312,12 @@ class Clue():
             else:
                 clue_inputs.append(i)
         
+        parsed_terrains = clue_inputs[1].split('-')
+        
         self.radius        = int(clue_inputs[0])
-        self.terrain       = mut.TERRAIN[clue_inputs[1]]
+        self.terrain       = [mut.TERRAIN[x] for x in parsed_terrains]
         self.animal        = mut.ANIMAL[clue_inputs[2]]
+        
         
         if self.radius == 2:
             self.structure = mut.STRUCTURE_TYPE[clue_inputs[3]]
@@ -318,7 +329,8 @@ class Clue():
         rad = self.radius
         search = None
         
-        if self.terrain is not mut.TERRAIN.NONE:
+        
+        if mut.TERRAIN.NONE not in self.terrain:
             search = self.terrain
         elif self.animal is not mut.ANIMAL.NONE:
             search = self.animal
