@@ -341,11 +341,11 @@ class Clue():
                 clue_inputs.append(i)
         
         parsed_terrains = clue_inputs[1].split('-')
-        parsed_animals  = clue_inputs[2].split('-')
+        parsed_animals = clue_inputs[2].split('-')
         
         self.radius        = int(clue_inputs[0])
         self.terrain       = [mut.TERRAIN[x] for x in parsed_terrains]
-        self.animal        = [mut.ANIMAL[x]  for x in parsed_animals]
+        self.animal        = [mut.ANIMAL[x] for x in parsed_animals]
         
         if self.radius == 2:
             self.structure = mut.STRUCTURE_TYPE[clue_inputs[3]]

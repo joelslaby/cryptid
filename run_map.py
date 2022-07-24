@@ -3,7 +3,17 @@ from map_util import STRUCTURE_TYPE, STRUCTURE_COLOR
 
 terrain_layout = [6, 3, 4, 1, 2, 5]
 terrain_rotate = [2, 5]
-clues = [map.Clue('2_N_N_STONE'), map.Clue('2_N_BEAR_N'), map.Clue('0_FOREST-SWAMP_N_N')]
+clues = [map.Clue('0_FOREST-DESERT_N_N'), map.Clue('0_FOREST-WATER_N_N'), map.Clue('0_FOREST-SWAMP_N_N'), map.Clue('0_FOREST-MOUNTAIN_N_N'),
+        map.Clue('0_DESERT-WATER_N_N'), map.Clue('0_DESERT-SWAMP_N_N'), map.Clue('0_DESERT-MOUNTAIN_N_N'), 
+        map.Clue('0_WATER-SWAMP_N_N'), map.Clue('0_WATER-MOUNTAIN_N_N'),
+        map.Clue('0_SWAMP-MOUNTAIN_N_N'),
+        map.Clue('1_FOREST_N_N'), map.Clue('1_DESERT_N_N'), map.Clue('1_SWAMP_N_N'), 
+        map.Clue('1_MOUNTAIN_N_N'), map.Clue('1_WATER_N_N'), map.Clue('1_N_BEAR-COUGAR_N'), 
+        map.Clue('2_N_N_STONE'), map.Clue('2_N_N_SHACK'), map.Clue('2_N_COUGAR_N'), map.Clue('2_N_BEAR_N'),
+        map.Clue('3_N_N_BLUE'), map.Clue('3_N_N_WHITE'), map.Clue('3_N_N_GREEN'),
+]
+
+clues = [map.Clue('1_N_BEAR-COUGAR_N')]
 
 structure_sets = [
     [STRUCTURE_TYPE.SHACK, STRUCTURE_COLOR.WHITE, [0, 4]],
