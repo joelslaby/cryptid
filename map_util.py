@@ -5,25 +5,26 @@ from enum import Enum
 from enum import IntEnum
 
 TERRCOLORS = {
-    'desert': np.array([255, 185, 15]),
-    'forest': np.array([34, 139, 34]),
-    'mountain': np.array([169, 169, 169]),
-    'swamp': np.array([148, 0, 211]),
-    'water': np.array([85, 163, 193]),
-    'none': np.array([255, 255, 255]),
+    'DESERT': np.array([255, 185, 15]),
+    'FOREST': np.array([34, 139, 34]),
+    'MOUNTAIN': np.array([169, 169, 169]),
+    'SWAMP': np.array([148, 0, 211]),
+    'WATER': np.array([85, 163, 193]),
+    'NONE': np.array([255, 255, 255]),
 }
     
 STRUCTCOLORS = {
-    'blue': np.array([53, 111, 163]),
-    'white': np.array([255, 255, 255]),
-    'green': np.array([0, 255, 0]),
-    'black': np.array([2, 0, 0])
+    'BLUE': np.array([53, 111, 163]),
+    'WHITE': np.array([255, 255, 255]),
+    'GREEN': np.array([0, 255, 0]),
+    'BLACK': np.array([2, 0, 0]),
+    'NONE' : np.array([0,0,0])
 }
 
 ANIMALCOLORS = {
-    'none' :   np.array([0,0,0]),
-    'bear' :   np.array([2,0,0]),
-    'cougar' : np.array([255,0,0]),
+    'NONE' :   np.array([0,0,0]),
+    'BEAR' :   np.array([2,0,0]),
+    'COUGAR' : np.array([255,0,0]),
     }
 
 class TERRAIN(Enum):
@@ -40,7 +41,7 @@ class ANIMAL(Enum):
     COUGAR = 2
     
 class STRUCTURE_TYPE(IntEnum):
-    NONE  = 6
+    NONE  = 0
     SHACK = 3
     STONE = 8
     
@@ -96,7 +97,7 @@ terrain_sets = [
         TERRAIN.SWAMP, TERRAIN.SWAMP, TERRAIN.WATER,
         TERRAIN.SWAMP, TERRAIN.SWAMP, TERRAIN.WATER,
         TERRAIN.DESERT, TERRAIN.WATER, TERRAIN.WATER,
-        TERRAIN.DESERT, TERRAIN.DESERT, TERRAIN.DESERT,
+        TERRAIN.DESERT, TERRAIN.DESERT, TERRAIN.WATER,
         TERRAIN.DESERT, TERRAIN.FOREST, TERRAIN.FOREST,
         TERRAIN.FOREST, TERRAIN.FOREST, TERRAIN.FOREST
     ],
@@ -108,6 +109,34 @@ terrain_sets = [
         TERRAIN.FOREST, TERRAIN.WATER, TERRAIN.MOUNTAIN,
         TERRAIN.FOREST, TERRAIN.WATER, TERRAIN.MOUNTAIN
     ]
+]
+
+
+structure_sets = [
+    [STRUCTURE_TYPE.SHACK, STRUCTURE_COLOR.WHITE, [-2, 3]],
+    [STRUCTURE_TYPE.SHACK, STRUCTURE_COLOR.BLUE, [-3, 5]],
+    [STRUCTURE_TYPE.STONE, STRUCTURE_COLOR.GREEN, [3, 0]],
+    [STRUCTURE_TYPE.STONE, STRUCTURE_COLOR.WHITE, [5, 2]],
+    [STRUCTURE_TYPE.STONE, STRUCTURE_COLOR.BLUE, [1, 4]],
+    [STRUCTURE_TYPE.SHACK, STRUCTURE_COLOR.GREEN, [4, 5]],
+]
+
+animal_sets = [
+    [ANIMAL.COUGAR, [-1, 4]],
+    [ANIMAL.COUGAR, [-1, 5]],
+    [ANIMAL.COUGAR, [-2, 5]],
+    [ANIMAL.COUGAR, [-6, 11]],
+    [ANIMAL.COUGAR, [-5, 10]],
+    [ANIMAL.COUGAR, [-5, 9]],
+    [ANIMAL.COUGAR, [1, 11]],
+    [ANIMAL.COUGAR, [0, 11]],
+    [ANIMAL.BEAR, [4, 0]],
+    [ANIMAL.BEAR, [5, 0]],
+    [ANIMAL.BEAR, [4, 1]],
+    [ANIMAL.BEAR, [7, 0]],
+    [ANIMAL.BEAR, [8, 0]],
+    [ANIMAL.BEAR, [-2, 9]],
+    [ANIMAL.BEAR, [-2, 10]],
 ]
 
 def make_poly_surface(color, shape = 6, angle_start = 45, sf = 1, radius = 30, opacity = 255, border_color=(100, 100, 100), border=True, hollow=False):
@@ -125,9 +154,8 @@ def make_poly_surface(color, shape = 6, angle_start = 45, sf = 1, radius = 30, o
     
     :return: A pygame surface with a hexagon drawn on it
     """
-        
+
     angles_in_radians = np.deg2rad([(360 // shape) * i + angle_start for i in range(shape)])
-    
     x = sf * radius * np.cos(angles_in_radians)
     y = sf * radius * np.sin(angles_in_radians)
     points = np.round(np.vstack([x, y]).T)
@@ -200,7 +228,7 @@ def get_map_cell_coord(cell_i):
     coord = []
 
     coord = gen_hex_rectangle(size = (3, 6), center = ((cell_i % 3 ) * 3 - (cell_i // 3 ) * 3, (cell_i // 3 ) * 6))
-    coord = translate_map(coord, W, 1)
-    coord = translate_map(coord, NW, 5)
+    # coord = translate_map(coord, W, 1)
+    # coord = translate_map(coord, NW, 5)
 
     return coord

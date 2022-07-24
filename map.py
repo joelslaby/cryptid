@@ -16,32 +16,28 @@ class Map:
     def __init__(self):
         self.hex_map = hx.HexMap()
 
-        self.size = np.array([300, 300])
-        self.width, self.height = self.size
-        self.center = self.size / 2
-
         #coord = mut.gen_hex_rectangle(1, 1)
 
         #coord = mut.translate_map(coord, mut.W, 1)
         #coord = mut.translate_map(coord, mut.NW, 3)
         
-        coord = np.array([[0,2], [0,3]])
-        coord = mut.translate_map(coord, mut.NW, 3)
+        # coord = np.array([[0,2], [0,3]])
+        # coord = mut.translate_map(coord, mut.NW, 3)
 
-        hex_radius = 50
-        myHex = hexagon(coord[0], hex_radius)
-        myHex.set_terrain('FOREST')
-        myHex.add_animal('COUGAR')
-        myHex.add_structure('STONE', 'BLACK')
+        # hex_radius = 50
+        # myHex = hexagon(coord[0], hex_radius)
+        # myHex.set_terrain('FOREST')
+        # myHex.add_animal('COUGAR')
+        # myHex.add_structure('STONE', 'BLACK')
         
         
-        myHex2 = hexagon(coord[1], hex_radius)
-        myHex2.set_terrain('DESERT')
-        myHex2.add_animal('BEAR')
-        myHex2.add_structure('SHACK', 'GREEN')
-        print(type(myHex2.image))
+        # myHex2 = hexagon(coord[1], hex_radius)
+        # myHex2.set_terrain('DESERT')
+        # myHex2.add_animal('BEAR')
+        # myHex2.add_structure('SHACK', 'GREEN')
+        # print(type(myHex2.image))
         
-        hexes = [myHex, myHex2]
+        # hexes = [myHex, myHex2]
         
         # for (x, key) in zip(coord, mut.TERRCOLORS.keys()):
         #     hexes.append(
@@ -65,16 +61,30 @@ class Map:
             for hex_i, x in enumerate(coord):
 
                 color = list(mut.TERRCOLORS.keys())[mut.terrain_sets[cell_i][hex_i].value]
+                
 
-                hexes.append(
-                    ExampleHex(
-                        x,
-                        color,
-                        hex_radius
-                    )
-                )
+                temp_hex = hexagon(
+                                x,
+                                color,
+                                hex_radius
+                            )
+                
+                hexes.append(temp_hex)
+
+                for struct in mut.structure_sets:
+                    if np.array_equal(np.array(struct[2]) , x):
+                        structure = (struct[0].value, 
+                            list(mut.STRUCTCOLORS.keys())[struct[1].value])
+                        temp_hex.add_structure(structure[0], structure[1])
+
+                for animals in mut.animal_sets:
+                    if np.array_equal(np.array(animals[1]) , x):
+                        animal = list(mut.ANIMALCOLORS.keys())[animals[0].value]
+                        temp_hex.add_animal(animal)
 
             self.hex_map[np.array(coord)] = hexes
+
+            # print(self.hex_map[np.array([0,0])])
 
         # Init pygame variables
         self.main_surf = None
@@ -118,14 +128,21 @@ class Map:
     def draw(self):
         hexagons = list(self.hex_map.values())
         hex_positions = np.array([hexagon.get_draw_position() for hexagon in hexagons])
-        sorted_indexes = np.argsort(hex_positions[:, 1][0])
+        # sorted_indexes = np.argsort(hex_positions[:, 1, :])
         
-        for index in sorted_indexes:
+        for index in range(np.shape(hex_positions)[0]):
             self.main_surf.blit(hexagons[index].image, hex_positions[index][0] + self.center)
-            if (hexagons[index].animal != 'NONE'):
+            if hexagons[index].animal.value:
                 self.main_surf.blit(hexagons[index].inner, hex_positions[index][1] + self.center)
-            if (hexagons[index].structure_type != 'NONE'):
+            if hexagons[index].structure_type:
                 self.main_surf.blit(hexagons[index].object, hex_positions[index][2] + self.center)
+
+        for hexagon in list(self.hex_map.values()):
+            text = self.font.render(str(hexagon.axial_coordinates[0]), False, (0, 0, 0))
+            text.set_alpha(160)
+            text_pos = hexagon.get_position() + self.center
+            text_pos -= (text.get_width() / 2, text.get_height() / 2)
+            self.main_surf.blit(text, text_pos)
             
         # Update screen at 30 frames per second
         pg.display.update()
@@ -138,21 +155,24 @@ class Map:
         raise SystemExit
     
 class hexagon(hx.HexTile):
-    def __init__(self, axial_coordinates, radius):
+    def __init__(self, axial_coordinates, terrain, radius):
         self.axial_coordinates = np.array([axial_coordinates])
         self.cube_coordinates = hx.axial_to_cube(self.axial_coordinates)
         self.radius = radius
         self.position = hx.axial_to_pixel(self.axial_coordinates, radius = self.radius)
-        self.terrain = mut.TERRAIN['FOREST']
+        self.terrain = mut.TERRAIN[terrain]
         self.animal = mut.ANIMAL['NONE']
         self.structure_type = mut.STRUCTURE_TYPE['NONE']
         self.structure_color = mut.STRUCTURE_COLOR['NONE']
-        self.image = None
         self.inner = None
         self.object = None
+        self.image = mut.make_poly_surface(mut.TERRCOLORS[list(mut.TERRCOLORS.keys())[self.terrain.value]],
+                                           radius = self.radius,
+                                           angle_start = 30
+                                           )
         
     def add_structure(self, struct, color):
-        self.structure_type = mut.STRUCTURE_TYPE[struct]
+        self.structure_type = struct
         self.structure_color = mut.STRUCTURE_COLOR[color]
         
         self.object = mut.make_poly_surface(mut.STRUCTCOLORS[list(mut.STRUCTCOLORS.keys())[self.structure_color.value]],
