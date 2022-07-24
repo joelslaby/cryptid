@@ -15,38 +15,6 @@ class ter(Enum):
 class Map:
     def __init__(self):
         self.hex_map = hx.HexMap()
-
-        #coord = mut.gen_hex_rectangle(1, 1)
-
-        #coord = mut.translate_map(coord, mut.W, 1)
-        #coord = mut.translate_map(coord, mut.NW, 3)
-        
-        # coord = np.array([[0,2], [0,3]])
-        # coord = mut.translate_map(coord, mut.NW, 3)
-
-        # hex_radius = 50
-        # myHex = hexagon(coord[0], hex_radius)
-        # myHex.set_terrain('FOREST')
-        # myHex.add_animal('COUGAR')
-        # myHex.add_structure('STONE', 'BLACK')
-        
-        
-        # myHex2 = hexagon(coord[1], hex_radius)
-        # myHex2.set_terrain('DESERT')
-        # myHex2.add_animal('BEAR')
-        # myHex2.add_structure('SHACK', 'GREEN')
-        # print(type(myHex2.image))
-        
-        # hexes = [myHex, myHex2]
-        
-        # for (x, key) in zip(coord, mut.TERRCOLORS.keys()):
-        #     hexes.append(
-        #         hexagon(
-        #             x,
-        #             key,
-        #             hex_radius
-        #         )
-        #     )
         
         self.size = np.array([700, 700])
         self.width, self.height = self.size
@@ -84,8 +52,6 @@ class Map:
 
             self.hex_map[np.array(coord)] = hexes
 
-            # print(self.hex_map[np.array([0,0])])
-
         # Init pygame variables
         self.main_surf = None
         self.font = None
@@ -94,8 +60,6 @@ class Map:
 
 
     def init_pg(self):
-        # TODO: Dont hardcode
-        # sets the window position to (x=100, y=100)
         os.environ['SDL_VIDEO_WINDOW_POS'] = "%d,%d" % (100, 100)
 
         pg.init()
