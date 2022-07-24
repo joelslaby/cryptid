@@ -115,8 +115,10 @@ class Map:
             if hexagons[index].structure_type:
                 self.main_surf.blit(hexagons[index].object, hex_positions[index][2] + self.center)
 
+        clue_data = []
         for hexagon in list(self.hex_map.values()):
-            check_hex(self.hex_map, hexagon, self.clues)
+            # check_hex(self.hex_map, hexagon, self.clues)
+            clue_data.append(sweep_clues(self.hex_map, hexagon, self.clues))
 
             text = self.font.render(str(hexagon.clue_valid), False, (0, 0, 0))
             text.set_alpha(160)
@@ -124,10 +126,14 @@ class Map:
             text_pos -= (text.get_width() / 2, text.get_height() / 2)
             self.main_surf.blit(text, text_pos)
             
+        
         # Update screen at 30 frames per second
         pg.display.update()
         self.main_surf.fill('white')
         self.clock.tick(30)
+
+        quit()
+        
 
 
     def quit_app(self):
@@ -283,37 +289,10 @@ def sweep_clues(map, hex, clue_vect):
             
         clue_match[idx] = this_clue_valid
 
+    print(clue_match)
+
     return clue_match
     
-    
-
-# def translate_map(map, direction, distance):
-#     direction = hx.cube_to_axial(np.array([direction]))
-#     print(type(map))
-#     temp_map = map
-#     for hex_coord in temp_map:
-#         hex_coord = np.fromstring(hex_coord, dtype=int, sep=',')
-#         hex = map[hex_coord][0]
-#         print(hex)
-
-#         print(hex.axial_coordinates)
-#         old_coord = hex.axial_coordinates
-
-#         hex.axial_coordinates += distance * np.squeeze(direction)
-
-#         print(hex.axial_coordinates)
-
-# # self.hex_map[np.array(coord)] = hexes
-#         del map[old_coord]
-#         print(map[hex.axial_coordinates])
-#         map[hex.axial_coordinates] = [hex]
-
-#         # print(hex_coord, distance, np.squeeze(direction))
-#         # print(hex_coord + distance * np.squeeze(direction))
-#         # map[hex_coord + distance * np.squeeze(direction)] = map[hex_coord]
-
-#     return map
-
 class Clue():
     def __init__(self, clue):
         

@@ -13,7 +13,7 @@ clues = [map.Clue('0_FOREST-DESERT_N_N'), map.Clue('0_FOREST-WATER_N_N'), map.Cl
         map.Clue('3_N_N_BLUE'), map.Clue('3_N_N_WHITE'), map.Clue('3_N_N_GREEN'),
 ]
 
-clues = [map.Clue('1_N_BEAR-COUGAR_N')]
+# clues = [map.Clue('1_N_BEAR-COUGAR_N')]
 
 structure_sets = [
     [STRUCTURE_TYPE.SHACK, STRUCTURE_COLOR.WHITE, [0, 4]],
