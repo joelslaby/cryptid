@@ -128,7 +128,8 @@ class hexagon(hx.HexTile):
         self.object = mut.make_poly_surface(mut.STRUCTCOLORS[list(mut.STRUCTCOLORS.keys())[self.structure_color.value]],
                                             border_color = mut.STRUCTCOLORS[list(mut.STRUCTCOLORS.keys())[self.structure_color.value]],
                                             shape = self.structure_type,
-                                            sf = 1,
+                                            sf = 1/2,
+                                            radius = self.radius,
                                             angle_start = 60
                                             )
     
@@ -137,8 +138,9 @@ class hexagon(hx.HexTile):
         
         self.inner = mut.make_poly_surface(mut.TERRCOLORS[list(mut.TERRCOLORS.keys())[self.terrain.value]],
                                            border_color = mut.ANIMALCOLORS[list(mut.ANIMALCOLORS.keys())[self.animal.value]], 
-                                           sf = 2, 
+                                           sf = 5/6, 
                                            opacity = 255,
+                                           radius = self.radius,
                                            angle_start = 30,
                                            hollow = True
                                            )

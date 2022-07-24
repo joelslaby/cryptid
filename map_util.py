@@ -17,12 +17,12 @@ STRUCTCOLORS = {
     'blue': np.array([53, 111, 163]),
     'white': np.array([255, 255, 255]),
     'green': np.array([0, 255, 0]),
-    'black': np.array([0, 0, 0])
+    'black': np.array([2, 0, 0])
 }
 
 ANIMALCOLORS = {
     'none' :   np.array([0,0,0]),
-    'bear' :   np.array([0,0,0]),
+    'bear' :   np.array([2,0,0]),
     'cougar' : np.array([255,0,0]),
     }
 
@@ -59,7 +59,7 @@ SW = np.array((-1, 0, 1))
 SE = np.array((0, -1, 1))
 E = np.array((1, -1, 0))
 
-def make_poly_surface(color, shape = 6, angle_start = 45, sf = 1, radius = 20, opacity = 255, border_color=(100, 100, 100), border=True, hollow=False):
+def make_poly_surface(color, shape = 6, angle_start = 45, sf = 1, radius = 30, opacity = 255, border_color=(100, 100, 100), border=True, hollow=False):
     """
     Draws a hexagon with gray borders on a pygame surface.
     :param terr: The terrain of the hex which determines its color.
