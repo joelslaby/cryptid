@@ -5,6 +5,7 @@ import map_util as mut
 import os
 from enum import Enum, auto
 from typing import List
+from itertools import combinations
 
 class ter(Enum):
     M = auto()
@@ -14,9 +15,9 @@ class ter(Enum):
     W = auto()
 
 class Map:
-    def __init__(self, terrain_layout, terrain_rotate, structure_sets, clues):
+    def __init__(self, terrain_layout, terrain_rotate, structure_sets, player_nbr, clues):
         self.hex_map = hx.HexMap()
-        
+        self.player_nbr = player_nbr
         self.size = np.array([600, 650])
         self.width, self.height = self.size
         self.center = np.array([100, 75])
@@ -115,21 +116,30 @@ class Map:
             if hexagons[index].structure_type:
                 self.main_surf.blit(hexagons[index].object, hex_positions[index][2] + self.center)
 
+        find_clues(self.hex_map, self.clues, numPlayers = self.player_nbr)
+        
         for hexagon in list(self.hex_map.values()):
-            check_hex(self.hex_map, hexagon, self.clues)
+            # check_hex(self.hex_map, hexagon, self.clues)
 
-            text = self.font.render(str(hexagon.clue_valid), False, (0, 0, 0))
+            # np.sum(clue_data_vect)
+
+            text = self.font.render(str(int(0)), False, (0, 0, 0))
             text.set_alpha(160)
             text_pos = hexagon.get_position() + self.center
             text_pos -= (text.get_width() / 2, text.get_height() / 2)
             self.main_surf.blit(text, text_pos)
             
+        # print(clue_data[0])
+
         # Update screen at 30 frames per second
         pg.display.update()
+        pg.image.save(self.main_surf, 'test.png')
+
         self.main_surf.fill('white')
         self.clock.tick(30)
 
-
+        self.quit_app()
+        
     def quit_app(self):
         pg.quit()
         raise SystemExit
@@ -248,9 +258,8 @@ def check_within(map, hex: hexagon, check: Enum, radius=0):
 
 def check_hex(map, hex, clue_vect):
     
-    temp_clue_valid = False
-    
     for clue in clue_vect:
+        temp_clue_valid = False
         rad, search = clue.check()
         if (type(search) == list):
             for s in search:
@@ -261,40 +270,66 @@ def check_hex(map, hex, clue_vect):
 
         else:  
             hex.clue_valid &= check_within(map, hex, search, radius = rad)
-    # hex.clue_valid = ((check_within(map, hex, mut.ANIMAL.BEAR, radius = 2)) and
-    #                 (check_within(map, hex, mut.TERRAIN.FOREST) or check_within(map, hex, mut.TERRAIN.DESERT)) and
-    #                 (check_within(map, hex, mut.STRUCTURE_COLOR.GREEN, radius = 3))
-    # )
 
     return hex.clue_valid
 
-# def translate_map(map, direction, distance):
-#     direction = hx.cube_to_axial(np.array([direction]))
-#     print(type(map))
-#     temp_map = map
-#     for hex_coord in temp_map:
-#         hex_coord = np.fromstring(hex_coord, dtype=int, sep=',')
-#         hex = map[hex_coord][0]
-#         print(hex)
+def sweep_clues(map, hex, clue_vect):
+    
+    # Sweeps through all clues in clue_vect for a given hex on a map
+    # Outputs binary vector for success/failure of clue in clue_vect
+    
+    clue_match = np.zeros(len(clue_vect))
+    
+    for (idx, clue) in enumerate(clue_vect):
+        this_clue_valid = False
+        
+        rad, search = clue.check()
+        
+        if (type(search) == list):
+            for s in search:
+                this_clue_valid = (this_clue_valid or 
+                check_within(map, hex, s, radius = rad)
+                )
+        else:  
+            this_clue_valid = check_within(map, hex, search, radius = rad)
+            
+        clue_match[idx] = this_clue_valid
 
-#         print(hex.axial_coordinates)
-#         old_coord = hex.axial_coordinates
 
-#         hex.axial_coordinates += distance * np.squeeze(direction)
+    return clue_match
 
-#         print(hex.axial_coordinates)
+def find_clues(map, clue_vect, numPlayers = 3):
+    
+    clue_data = []
+    
+    for hexagon in list(map.values()):
+        clue_data.append(sweep_clues(map, hexagon, clue_vect))
+    
+    clue_data = np.array(clue_data, dtype = int)
 
-# # self.hex_map[np.array(coord)] = hexes
-#         del map[old_coord]
-#         print(map[hex.axial_coordinates])
-#         map[hex.axial_coordinates] = [hex]
-
-#         # print(hex_coord, distance, np.squeeze(direction))
-#         # print(hex_coord + distance * np.squeeze(direction))
-#         # map[hex_coord + distance * np.squeeze(direction)] = map[hex_coord]
-
-#     return map
-
+    good_hexes = []
+    good_clues = []
+    
+    for combo in combinations(clue_data.T, numPlayers):
+        soln = combo[0]
+        for clue_row in combo:
+            soln = np.bitwise_and(soln, clue_row)
+        if sum(soln) == 1:
+            good_hexes.append(np.where(soln == 1)[0][0])
+            
+            clue_idx = []
+            for clue_row in combo:
+                clue_idx.append(np.where((clue_data.T == clue_row).all(axis=1))[0][0])
+                
+            good_clues.append(clue_idx)
+    
+    print(good_hexes, good_clues)
+    print(len(good_hexes), len(good_clues))
+    
+    return good_hexes, good_clues
+            
+    
+    
 class Clue():
     def __init__(self, clue):
         
@@ -322,11 +357,11 @@ class Clue():
                 clue_inputs.append(i)
         
         parsed_terrains = clue_inputs[1].split('-')
+        parsed_animals = clue_inputs[2].split('-')
         
         self.radius        = int(clue_inputs[0])
         self.terrain       = [mut.TERRAIN[x] for x in parsed_terrains]
-        self.animal        = mut.ANIMAL[clue_inputs[2]]
-        
+        self.animal        = [mut.ANIMAL[x] for x in parsed_animals]
         
         if self.radius == 2:
             self.structure = mut.STRUCTURE_TYPE[clue_inputs[3]]
@@ -338,12 +373,11 @@ class Clue():
         rad = self.radius
         search = None
         
-        
         if mut.TERRAIN.NONE not in self.terrain:
             search = self.terrain
-        elif self.animal is not mut.ANIMAL.NONE:
+        elif mut.ANIMAL.NONE not in self.animal:
             search = self.animal
-        else:
+        elif self.structure:
             search = self.structure
             
         return rad, search
