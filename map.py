@@ -115,24 +115,32 @@ class Map:
             if hexagons[index].structure_type:
                 self.main_surf.blit(hexagons[index].object, hex_positions[index][2] + self.center)
 
-        clue_data = []
+        # clue_data = []
         for hexagon in list(self.hex_map.values()):
-            # check_hex(self.hex_map, hexagon, self.clues)
-            clue_data.append(sweep_clues(self.hex_map, hexagon, self.clues))
+            x = check_hex(self.hex_map, hexagon, self.clues)
+            # clue_data_vect = sweep_clues(self.hex_map, hexagon, self.clues)
+            # clue_data.append(clue_data_vect)
 
-            text = self.font.render(str(hexagon.clue_valid), False, (0, 0, 0))
+            # np.sum(clue_data_vect)
+
+            text = self.font.render(str(int(x)), False, (0, 0, 0))
             text.set_alpha(160)
             text_pos = hexagon.get_position() + self.center
             text_pos -= (text.get_width() / 2, text.get_height() / 2)
             self.main_surf.blit(text, text_pos)
             
-        
+        # print(clue_data[0])
+
         # Update screen at 30 frames per second
         pg.display.update()
+        pg.image.save(self.main_surf, 'test.png')
+
         self.main_surf.fill('white')
         self.clock.tick(30)
 
-        quit()
+        
+
+        # self.quit_app()
         
 
 
@@ -254,9 +262,8 @@ def check_within(map, hex: hexagon, check: Enum, radius=0):
 
 def check_hex(map, hex, clue_vect):
     
-    temp_clue_valid = False
-    
     for clue in clue_vect:
+        temp_clue_valid = False
         rad, search = clue.check()
         if (type(search) == list):
             for s in search:
@@ -289,7 +296,7 @@ def sweep_clues(map, hex, clue_vect):
             
         clue_match[idx] = this_clue_valid
 
-    print(clue_match)
+    # print(clue_match)
 
     return clue_match
     
@@ -336,12 +343,11 @@ class Clue():
         rad = self.radius
         search = None
         
-        
         if mut.TERRAIN.NONE not in self.terrain:
             search = self.terrain
-        elif self.animal is not mut.ANIMAL.NONE:
+        elif mut.ANIMAL.NONE not in self.animal:
             search = self.animal
-        else:
+        elif self.structure:
             search = self.structure
             
         return rad, search
