@@ -15,7 +15,7 @@ class ter(Enum):
     W = auto()
 
 class Map:
-    def __init__(self, terrain_layout, terrain_rotate, structure_sets, player_nbr, clues):
+    def __init__(self, terrain_layout, terrain_rotate, structure_sets, player_nbr, clues, quit=False):
         self.hex_map = hx.HexMap()
         self.player_nbr = player_nbr
         self.size = np.array([600, 650])
@@ -26,6 +26,7 @@ class Map:
         self.terrain_rotate = terrain_rotate
         self.terrain_layout = terrain_layout
         self.structure_sets = structure_sets
+        self.quit=quit
 
         for i, cell_i in enumerate(self.terrain_layout):
             coord = mut.get_map_cell_coord(i)
@@ -65,6 +66,10 @@ class Map:
                         temp_hex.add_animal(animal)
 
             self.hex_map[np.array(coord)] = hexes
+
+        if self.quit:
+            good_hexes_and_clues = find_clues(self.hex_map, self.clues, numPlayers = self.player_nbr)
+            compare_against_struct(self.structure_sets, good_hexes_and_clues, self.clues)
 
 
         # Init pygame variables
@@ -116,7 +121,6 @@ class Map:
             if hexagons[index].structure_type:
                 self.main_surf.blit(hexagons[index].object, hex_positions[index][2] + self.center)
 
-        # find_clues(self.hex_map, self.clues, numPlayers = self.player_nbr)
         
         for hexagon in list(self.hex_map.values()):
             x = check_hex(self.hex_map, hexagon, self.clues)
@@ -136,7 +140,8 @@ class Map:
         self.main_surf.fill('white')
         self.clock.tick(30)
 
-        # self.quit_app()
+        if self.quit:
+            self.quit_app()
         
     def quit_app(self):
         pg.quit()
@@ -365,6 +370,30 @@ class Clue():
             self.structure = mut.STRUCTURE_TYPE[clue_inputs[3]]
         else:
             self.structure = mut.STRUCTURE_COLOR[clue_inputs[3]]
+
+    def get_string(self):
+        string = ''
+        string += str(self.radius) + '_'
+
+        if mut.TERRAIN.NONE in self.terrain:
+            string += 'N_'
+        else:
+            for x in self.terrain:
+                string += str(x.name) + '-'
+
+        if mut.ANIMAL.NONE in self.animal:
+            string += 'N_'
+        else:
+            for x in self.animal:
+                string += str(x.name) + '-'
+
+        if mut.STRUCTURE_TYPE.NONE == self.structure:
+            string += 'N'
+        else:
+            string += str(self.structure.name) 
+
+
+        return string
     
     def check(self):
         
@@ -379,4 +408,42 @@ class Clue():
             search = self.structure
             
         return rad, search
+
+
+def convert_axial_to_pos(q, r, m=6, n=3):
+    col = q + (r + r%2)//2
+    row = r
+
+    tile_nbr = (row // m) * n + (col // n)
+
+    rel_x = col % n
+    rel_y = row % m
+
+    pos = tile_nbr * m * n + rel_y * n + rel_x
+    return pos
+
+def compare_against_struct(structure_sets, good_hexes_clues, clues_set):
+    structure_pos = []
+
+    for x in structure_sets:        
+        pos = convert_axial_to_pos(x[2][0], x[2][1])
+        structure_pos.append(pos)
+
+    for pos in structure_pos:
+        equal_pos_idx = np.where(np.array(good_hexes_clues[0]) == pos)[0]
+        if len(equal_pos_idx) >= 1:
+            print(f'position {pos}')
+            print(f'position_idx {equal_pos_idx}')
+            print(f'hex_pos: {[good_hexes_clues[0][a] for a in equal_pos_idx]}')
+            print(f'clues: {[good_hexes_clues[1][a] for a in equal_pos_idx]}')
+
+            for b in equal_pos_idx:
+                clues = [clues_set[x].get_string() for x in good_hexes_clues[1][b]]
+                print(clues)
+
+            print(f'nbr_sol: {len(equal_pos_idx)} for position: {pos}')
+
+    # get_string(clues)
         
+
+    
