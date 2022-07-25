@@ -4,29 +4,33 @@ import pygame as pg
 from enum import Enum
 from enum import IntEnum
 
+
+# Colors for terrain
 TERRCOLORS = {
-    'DESERT': np.array([255, 185, 15]),
-    'FOREST': np.array([34, 139, 34]),
-    'MOUNTAIN': np.array([169, 169, 169]),
-    'SWAMP': np.array([148, 0, 211]),
-    'WATER': np.array([85, 163, 193]),
-    'NONE': np.array([255, 255, 255]),
+    'DESERT': np.array([255, 185, 15]), # Yellowish
+    'FOREST': np.array([34, 139, 34]), # Light Greenish
+    'MOUNTAIN': np.array([169, 169, 169]), # Grayish
+    'SWAMP': np.array([148, 0, 211]), # Purplish
+    'WATER': np.array([85, 163, 193]), # Light Blueish
+    'NONE': np.array([255, 255, 255]), # White
 }
-    
+
 STRUCTCOLORS = {
-    'BLUE': np.array([53, 111, 163]),
-    'WHITE': np.array([255, 255, 255]),
-    'GREEN': np.array([0, 255, 0]),
-    'BLACK': np.array([2, 0, 0]),
-    'NONE' : np.array([0,0,0])
+    'BLUE': np.array([53, 111, 163]), # Dark Blueish
+    'WHITE': np.array([255, 255, 255]), # White
+    'GREEN': np.array([0, 255, 0]), # Green
+    'BLACK': np.array([2, 0, 0]), # Blackish
+    'NONE' : np.array([0,0,0]) # Black
 }
 
 ANIMALCOLORS = {
-    'NONE' :   np.array([0,0,0]),
-    'BEAR' :   np.array([2,0,0]),
-    'COUGAR' : np.array([255,0,0]),
+    'NONE' :   np.array([0,0,0]), # Black
+    'BEAR' :   np.array([2,0,0]), # Blackish
+    'COUGAR' : np.array([255,0,0]), # Red
     }
 
+
+# Enums for all hex labels
 class TERRAIN(Enum):
     DESERT   = 0
     FOREST   = 1
@@ -34,25 +38,25 @@ class TERRAIN(Enum):
     SWAMP    = 3
     WATER    = 4
     NONE     = 5
-    
+
 class ANIMAL(Enum):
     NONE   = 0
     BEAR   = 1
     COUGAR = 2
-    
+
 class STRUCTURE_TYPE(IntEnum):
     NONE  = 0
     SHACK = 3
     STONE = 8
-    
+
 class STRUCTURE_COLOR(Enum):
     BLUE   = 0
     WHITE  = 1
     GREEN  = 2
     BLACK  = 3
     NONE   = 4
-    
 
+# Axial Coordinate system for pointed hex using numpy
 NE = np.array((1, 0, -1))
 NW = np.array((0, 1, -1))
 W = np.array((-1, 1, 0))
@@ -61,6 +65,7 @@ SE = np.array((0, -1, 1))
 E = np.array((1, -1, 0))
 ALL_DIRECTIONS = np.array([NW, NE, E, SE, SW, W])
 
+# Each of the six modules of Cryptid organized by terrain
 terrain_sets = {
     1: [
         TERRAIN.SWAMP, TERRAIN.SWAMP, TERRAIN.WATER,
@@ -155,7 +160,7 @@ def make_poly_surface(color, shape = 6, angle_start = 45, sf = 1, radius = 30, o
     :param border_color: Color of the border.
     :param border: Draws border if True
     :param hollow: Does not fill hex with color if True.
-    
+
     :return: A pygame surface with a hexagon drawn on it
     """
 
@@ -172,7 +177,7 @@ def make_poly_surface(color, shape = 6, angle_start = 45, sf = 1, radius = 30, o
     maxy = sorted_y[-1]
 
     sorted_idxs = np.lexsort((points[:, 0], points[:, 1]))
-    
+
     # Main surface dimensions
     surf_size = np.array((maxx - minx, maxy - miny)) * 2 + 1
     center = surf_size / 2
@@ -188,9 +193,9 @@ def make_poly_surface(color, shape = 6, angle_start = 45, sf = 1, radius = 30, o
 
 
     points[sorted_idxs[-1:-4:-1]] += [0, 1]
-    
+
     # if border is true is true draw border.
-    
+
     if border or hollow:
         pg.draw.lines(surface, border_color, True, points + center, 1)
 
@@ -222,8 +227,8 @@ def gen_hex_rectangle(size, center):
                 offset = 0
             coord.append(
                 [col - row//2 - offset + center_q, row + center_r]
-            )       
-            
+            )
+
 
     return np.array(coord)
 
@@ -242,5 +247,3 @@ def rotate_terrain(terrain_set):
     terrain_set = np.reshape(np.array(terrain_set), (6, 3))
     terrain_set = np.flipud(np.fliplr(terrain_set)).flatten()
     return terrain_set
-
-
