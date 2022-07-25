@@ -15,9 +15,9 @@ class ter(Enum):
     W = auto()
 
 class Map:
-    def __init__(self, terrain_layout, terrain_rotate, structure_sets, clues):
+    def __init__(self, terrain_layout, terrain_rotate, structure_sets, player_nbr, clues):
         self.hex_map = hx.HexMap()
-        
+        self.player_nbr = player_nbr
         self.size = np.array([600, 650])
         self.width, self.height = self.size
         self.center = np.array([100, 75])
@@ -116,7 +116,7 @@ class Map:
             if hexagons[index].structure_type:
                 self.main_surf.blit(hexagons[index].object, hex_positions[index][2] + self.center)
 
-        find_clues(self.hex_map, self.clues, numPlayers = 4)
+        find_clues(self.hex_map, self.clues, numPlayers = self.player_nbr)
         
         for hexagon in list(self.hex_map.values()):
             # check_hex(self.hex_map, hexagon, self.clues)
@@ -138,9 +138,7 @@ class Map:
         self.main_surf.fill('white')
         self.clock.tick(30)
 
-        
-
-        # self.quit_app()
+        self.quit_app()
         
     def quit_app(self):
         pg.quit()
