@@ -116,7 +116,7 @@ class Map:
             if hexagons[index].structure_type:
                 self.main_surf.blit(hexagons[index].object, hex_positions[index][2] + self.center)
 
-        find_clues(self.hex_map, self.clues)
+        find_clues(self.hex_map, self.clues, numPlayers = 4)
         
         for hexagon in list(self.hex_map.values()):
             # check_hex(self.hex_map, hexagon, self.clues)
@@ -253,9 +253,8 @@ def check_within(map, hex: hexagon, check: Enum, radius=0):
 
 def check_hex(map, hex, clue_vect):
     
-    temp_clue_valid = False
-    
     for clue in clue_vect:
+        temp_clue_valid = False
         rad, search = clue.check()
         if (type(search) == list):
             for s in search:
@@ -302,7 +301,7 @@ def find_clues(map, clue_vect, numPlayers = 3):
         clue_data.append(sweep_clues(map, hexagon, clue_vect))
     
     clue_data = np.array(clue_data, dtype = int)
-    
+
     good_hexes = []
     good_clues = []
     
@@ -310,17 +309,18 @@ def find_clues(map, clue_vect, numPlayers = 3):
         soln = combo[0]
         for clue_row in combo:
             soln = np.bitwise_and(soln, clue_row)
-            print(sum(soln))
         if sum(soln) == 1:
-            good_hexes.append(np.where(soln == 1)[0])
+            good_hexes.append(np.where(soln == 1)[0][0])
             
             clue_idx = []
             for clue_row in combo:
-                clue_idx.append(np.where((clue_data.T == clue_row).all(axis=1))[0])
+                clue_idx.append(np.where((clue_data.T == clue_row).all(axis=1))[0][0])
                 
             good_clues.append(clue_idx)
     
     print(good_hexes, good_clues)
+    print(len(good_hexes), len(good_clues))
+    
     return good_hexes, good_clues
             
     
@@ -371,7 +371,7 @@ class Clue():
         
         if mut.TERRAIN.NONE not in self.terrain:
             search = self.terrain
-        elif self.animal is not mut.ANIMAL.NONE:
+        elif mut.ANIMAL.NONE not in self.animal:
             search = self.animal
         else:
             search = self.structure
