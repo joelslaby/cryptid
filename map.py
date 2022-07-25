@@ -5,6 +5,7 @@ import map_util as mut
 import os
 from enum import Enum, auto
 from typing import List
+from itertools import combinations
 
 class ter(Enum):
     M = auto()
@@ -115,10 +116,10 @@ class Map:
             if hexagons[index].structure_type:
                 self.main_surf.blit(hexagons[index].object, hex_positions[index][2] + self.center)
 
-        clue_data = []
+        find_clues(self.hex_map, self.clues)
+        
         for hexagon in list(self.hex_map.values()):
             # check_hex(self.hex_map, hexagon, self.clues)
-            clue_data.append(sweep_clues(self.hex_map, hexagon, self.clues))
 
             text = self.font.render(str(hexagon.clue_valid), False, (0, 0, 0))
             text.set_alpha(160)
@@ -131,11 +132,9 @@ class Map:
         pg.display.update()
         self.main_surf.fill('white')
         self.clock.tick(30)
-
-        quit()
+        pg.time.wait(1000)
+        self.quit_app()
         
-
-
     def quit_app(self):
         pg.quit()
         raise SystemExit
@@ -272,6 +271,9 @@ def check_hex(map, hex, clue_vect):
 
 def sweep_clues(map, hex, clue_vect):
     
+    # Sweeps through all clues in clue_vect for a given hex on a map
+    # Outputs binary vector for success/failure of clue in clue_vect
+    
     clue_match = np.zeros(len(clue_vect))
     
     for (idx, clue) in enumerate(clue_vect):
@@ -289,9 +291,39 @@ def sweep_clues(map, hex, clue_vect):
             
         clue_match[idx] = this_clue_valid
 
-    print(clue_match)
 
     return clue_match
+
+def find_clues(map, clue_vect, numPlayers = 3):
+    
+    clue_data = []
+    
+    for hexagon in list(map.values()):
+        clue_data.append(sweep_clues(map, hexagon, clue_vect))
+    
+    clue_data = np.array(clue_data, dtype = int)
+    
+    good_hexes = []
+    good_clues = []
+    
+    for combo in combinations(clue_data.T, numPlayers):
+        soln = combo[0]
+        for clue_row in combo:
+            soln = np.bitwise_and(soln, clue_row)
+            print(sum(soln))
+        if sum(soln) == 1:
+            good_hexes.append(np.where(soln == 1)[0])
+            
+            clue_idx = []
+            for clue_row in combo:
+                clue_idx.append(np.where((clue_data.T == clue_row).all(axis=1))[0])
+                
+            good_clues.append(clue_idx)
+    
+    print(good_hexes, good_clues)
+    return good_hexes, good_clues
+            
+    
     
 class Clue():
     def __init__(self, clue):
