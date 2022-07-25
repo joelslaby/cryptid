@@ -13,9 +13,9 @@ clues_set = [map.Clue('0_FOREST-DESERT_N_N'), map.Clue('0_FOREST-WATER_N_N'), ma
             map.Clue('3_N_N_BLUE'), map.Clue('3_N_N_WHITE'), map.Clue('3_N_N_GREEN'),
 ]
 
-clues_id = [15, 16, 17, 19, 20, 22]
+clues_id = [9, 20, 21]
 clues = [clues_set[x] for x in clues_id]
-clues = clues_set
+# clues = clues_set
 
 player_nbr = 3
 

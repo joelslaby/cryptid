@@ -116,14 +116,12 @@ class Map:
             if hexagons[index].structure_type:
                 self.main_surf.blit(hexagons[index].object, hex_positions[index][2] + self.center)
 
-        find_clues(self.hex_map, self.clues, numPlayers = self.player_nbr)
+        # find_clues(self.hex_map, self.clues, numPlayers = self.player_nbr)
         
         for hexagon in list(self.hex_map.values()):
-            # check_hex(self.hex_map, hexagon, self.clues)
+            x = check_hex(self.hex_map, hexagon, self.clues)
 
-            # np.sum(clue_data_vect)
-
-            text = self.font.render(str(int(0)), False, (0, 0, 0))
+            text = self.font.render(str(int(x)), False, (0, 0, 0))
             text.set_alpha(160)
             text_pos = hexagon.get_position() + self.center
             text_pos -= (text.get_width() / 2, text.get_height() / 2)
@@ -138,7 +136,7 @@ class Map:
         self.main_surf.fill('white')
         self.clock.tick(30)
 
-        self.quit_app()
+        # self.quit_app()
         
     def quit_app(self):
         pg.quit()
