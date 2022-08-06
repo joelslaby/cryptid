@@ -14,11 +14,11 @@ clues_set = [map.Clue('0_FOREST-DESERT_N_N'), map.Clue('0_FOREST-WATER_N_N'), ma
 ]
 # 
 
-# clues_id = [0, 12, 13, 17]
-# clues = [clues_set[x] for x in clues_id]
-clues = clues_set
+clues_id = [0, 16, 17]
+clues = [clues_set[x] for x in clues_id]
+# clues = clues_set
 
-player_nbr = 13
+player_nbr = 3
 
 # [map.Clue('0_FOREST-SWAMP_N_N'), map.Clue('2_N_N_STONE') ,map.Clue('2_N_BEAR_N')]
 # clues = [map.Clue('2_N_BEAR_N')]
@@ -42,7 +42,7 @@ structure_sets = [
     [STRUCTURE_TYPE.STONE, STRUCTURE_COLOR.GREEN, [1, 6]],
 ]
 
-test_map = map.Map(terrain_layout, terrain_rotate, structure_sets, player_nbr, clues, quit=True)
+test_map = map.Map(terrain_layout, terrain_rotate, structure_sets, player_nbr, clues, quit=False)
 
 while test_map.main_loop():
     test_map.draw()

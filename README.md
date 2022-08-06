@@ -12,7 +12,7 @@ https://www.redblobgames.com/grids/hexagons/
 ## Board Development
 There are several project goals:
 1. DONE - Replicate Cryptid map, clue generation, and verify cryptid hex
-2. Generate new clues based on maps created with arbitrary permutations of crtypid map tiles
+2. DONE - Generate new clues based on maps created with arbitrary permutations of crtypid map tiles
 3. Generate entirely new maps with arbitrary hex placement
 
 ## Game Analysis
