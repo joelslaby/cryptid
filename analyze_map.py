@@ -1,5 +1,8 @@
 import map
 from map_util import STRUCTURE_TYPE, STRUCTURE_COLOR
+import numpy as np
+from tqdm import tqdm
+import dill
 
 terrain_layout = [1, 5, 4, 6, 2, 3]
 terrain_rotate = [1, 4, 6, 3]
@@ -42,9 +45,25 @@ structure_sets = [
     [STRUCTURE_TYPE.STONE, STRUCTURE_COLOR.GREEN, [1, 6]],
 ]
 
-test_map = map.Map(terrain_layout, terrain_rotate, structure_sets, player_nbr, clues, quit=True)
 
-while test_map.main_loop():
-    test_map.draw()
+class Data():
+   pass
 
-test_map.quit_app()
+d = Data()
+
+d.player_nbrs = np.arange(3, 21)
+d.good_hexes = []
+d.good_clues = []
+d.combo_time = []
+
+for player_ct in d.player_nbrs:
+    test_map = map.Map(terrain_layout, terrain_rotate, structure_sets, player_ct, clues, no_map=True)
+
+    good_hexes, good_clues, combo_time = map.find_clues(test_map.hex_map, test_map.clues, numPlayers = test_map.player_nbr)
+
+    d.good_hexes.append(good_hexes)
+    d.good_clues.append(good_clues)
+    d.combo_time.append(combo_time)
+
+with open('map_data.pk', 'wb') as file:
+    dill.dump(d, file)

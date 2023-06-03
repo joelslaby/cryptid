@@ -6,6 +6,7 @@ import os
 from enum import Enum, auto
 from typing import List
 from itertools import combinations
+import time
 
 class ter(Enum):
     M = auto()
@@ -15,7 +16,7 @@ class ter(Enum):
     W = auto()
 
 class Map:
-    def __init__(self, terrain_layout, terrain_rotate, structure_sets, player_nbr, clues, quit=False):
+    def __init__(self, terrain_layout, terrain_rotate, structure_sets, player_nbr, clues, no_map=False):
         self.hex_map = hx.HexMap()
         self.player_nbr = player_nbr
         self.size = np.array([600, 650])
@@ -26,7 +27,7 @@ class Map:
         self.terrain_rotate = terrain_rotate
         self.terrain_layout = terrain_layout
         self.structure_sets = structure_sets
-        self.quit=quit
+        self.no_map=no_map
 
         for i, cell_i in enumerate(self.terrain_layout):
             coord = mut.get_map_cell_coord(i)
@@ -67,16 +68,11 @@ class Map:
 
             self.hex_map[np.array(coord)] = hexes
 
-        if self.quit:
-            good_hexes_and_clues = find_clues(self.hex_map, self.clues, numPlayers = self.player_nbr)
-            compare_against_struct(self.structure_sets, good_hexes_and_clues, self.clues)
-
-
-        # Init pygame variables
-        self.main_surf = None
-        self.font = None
-        self.clock = None
-        self.init_pg()
+        if not self.no_map:
+            self.main_surf = None
+            self.font = None
+            self.clock = None
+            self.init_pg()
 
 
     def init_pg(self):
@@ -88,7 +84,6 @@ class Map:
         pg.font.init()
         self.font = pg.font.SysFont("monospace", 14, True)
         self.clock = pg.time.Clock()
-
 
     def handle_events(self):
         running = True
@@ -102,12 +97,10 @@ class Map:
 
         return running
 
-
     def main_loop(self):
         running = self.handle_events()
 
         return running
-
 
     def draw(self):
         hexagons = list(self.hex_map.values())
@@ -146,7 +139,8 @@ class Map:
     def quit_app(self):
         pg.quit()
         raise SystemExit
-    
+
+
 class hexagon(hx.HexTile):
     def __init__(self, axial_coordinates, terrain, radius):
         self.axial_coordinates = np.array([axial_coordinates])
@@ -304,10 +298,15 @@ def sweep_clues(map, hex, clue_vect):
 def find_clues(map, clue_vect, numPlayers = 3):
     
     clue_data = []
+
+    print(numPlayers)
+    init_time = time.time()
     
     for hexagon in list(map.values()):
         clue_data.append(sweep_clues(map, hexagon, clue_vect))
     
+    print('Sweep Clues: ', time.time()-init_time)
+
     clue_data = np.array(clue_data, dtype = int)
 
     good_hexes = []
@@ -325,11 +324,14 @@ def find_clues(map, clue_vect, numPlayers = 3):
                 clue_idx.append(np.where((clue_data.T == clue_row).all(axis=1))[0][0])
                 
             good_clues.append(clue_idx)
+
+    print('Find good combos: ', time.time()-init_time)
+    combo_time = time.time()-init_time
     
-    print(good_hexes, good_clues)
-    print(len(good_hexes), len(good_clues))
+    # print(good_hexes, good_clues)
+    # print(len(good_hexes), len(good_clues))
     
-    return good_hexes, good_clues
+    return good_hexes, good_clues ,combo_time
             
     
     
